@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<mx:HBox xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx"
+		 width="100%" height="100%">
+	<fx:Metadata>
+		[Event(name="channelChange", type="events.ChannelChangeEvent")]
+	</fx:Metadata>
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<fx:Script>
+		<![CDATA[
+			import events.ChannelChangeEvent;
+			
+			import mx.events.FlexEvent;
+			
+			private var mSelectedIndex:int = 0;
+			
+			[Bindable]
+			[Embed('assets/icon-store-selected.png')]
+			private var icon1Selected:Class;
+			
+			[Bindable]
+			[Embed('assets/icon-sync-selected.png')]
+			private var icon2Selected:Class;
+			
+			[Bindable]
+			[Embed('assets/icon-download-selected.png')]
+			private var icon3Selected:Class;
+			
+			[Bindable]
+			[Embed('assets/icon-store.png')]
+			private var icon1Normal:Class;
+			
+			[Bindable]
+			[Embed('assets/icon-sync.png')]
+			private var icon2Normal:Class;
+			
+			[Bindable]
+			[Embed('assets/icon-download.png')]
+			private var icon3Normal:Class;
+			
+			protected function icon1_clickHandler(event:MouseEvent):void
+			{
+				if (mSelectedIndex != 0)
+				{
+					icon1.source = icon1Selected;
+					icon2.source = icon2Normal;
+					icon3.source = icon3Normal;
+					
+					var oldIndex:int = mSelectedIndex;
+					mSelectedIndex = 0;
+					
+					var ev:ChannelChangeEvent = new ChannelChangeEvent();
+					ev.oldChannelIndex = oldIndex;
+					ev.newChannelIndex = 0;
+					this.dispatchEvent(ev);
+				}
+			}
+			
+			protected function icon2_clickHandler(event:MouseEvent):void
+			{
+				if (mSelectedIndex != 1)
+				{
+					icon1.source = icon1Normal;
+					icon2.source = icon2Selected;
+					icon3.source = icon3Normal;
+					
+					var oldIndex:int = mSelectedIndex;
+					mSelectedIndex = 1;
+					
+					var ev:ChannelChangeEvent = new ChannelChangeEvent();
+					ev.oldChannelIndex = oldIndex;
+					ev.newChannelIndex = 1;
+					this.dispatchEvent(ev);
+				}
+			}
+			
+			protected function icon3_clickHandler(event:MouseEvent):void
+			{
+				if (mSelectedIndex != 2)
+				{
+					icon1.source = icon1Normal;
+					icon2.source = icon2Normal;
+					icon3.source = icon3Selected;
+					
+					var oldIndex:int = mSelectedIndex;
+					mSelectedIndex = 2;
+					
+					var ev:ChannelChangeEvent = new ChannelChangeEvent();
+					ev.oldChannelIndex = oldIndex;
+					ev.newChannelIndex = 2;
+					this.dispatchEvent(ev);
+				}
+			}
+		]]>
+	</fx:Script>
+	<s:Image id="icon1" source="{icon1Selected}" click="icon1_clickHandler(event)"/>
+	<s:Image id="icon2" source="{icon2Normal}" click="icon2_clickHandler(event)"/>
+	<s:Image id="icon3" source="{icon3Normal}" click="icon3_clickHandler(event)"/>
+</mx:HBox>
