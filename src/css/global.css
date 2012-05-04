@@ -1,0 +1,50 @@
+/* CSS file */
+@namespace s "library://ns.adobe.com/flex/spark";
+@namespace mx "library://ns.adobe.com/flex/mx";
+
+@font-face {
+	src:url("../assets/Microsoft Yahei.ttf");
+	fontFamily: myFontFamily;
+	advancedAntiAliasing: true;
+}
+
+s|Application {
+	color:#666666;
+	fontFamily:myFontFamily;
+	fontWeight:normal;
+}
+
+s|TextInput {
+	borderVisible:false;
+	fontSize:17pt;
+	paddingLeft:0;
+	paddingRight:0;
+	paddingTop:0;
+	paddingBottom:0;
+}
+
+s|Label {
+	fontSize:17pt;
+}
+
+#leftTabBar s|Label {
+	color:#EEEEEE;
+	fontSize:12pt;
+	fontWeight:normal;
+}
+
+s|Label.whiteTitle {
+	color:#FFFFFF;
+	fontSize:14pt;
+	textAlign:center;
+}
+
+s|Label.button {
+	backgroundColor:#7cbc12;
+	color:#FFFFFF;
+	fontSize:12pt;
+	paddingTop:6px;
+	paddingBottom:6px;
+	paddingLeft:12px;
+	paddingRight:12px;
+}

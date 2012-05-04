@@ -2,6 +2,8 @@ package classes
 {
 	import flash.events.EventDispatcher;
 	
+	import flashx.textLayout.formats.Float;
+	
 	import mx.controls.Alert;
 
 	[Bindable]
@@ -18,6 +20,11 @@ package classes
 		public function get volumeStatus():String
 		{
 			return "已用"+used+"M，还有"+(total-used)+"M可用空间";
+		}
+		
+		public function get usage():Number
+		{
+			return used*100/total;
 		}
 				
 		public function getVisibleUsageWidth(totalWidth:int):int

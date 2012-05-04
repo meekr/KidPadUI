@@ -5,9 +5,10 @@
 			   xmlns:local="*"
 			   xmlns:components="components.*"
 			   xmlns:classes="classes.*"
-			   width="800" height="600" minWidth="800" minHeight="600"
-			   skinClass="ApplicationSkin"
-			   initialize="application1_initializeHandler(event)">
+			   width="980" height="620" minWidth="698" minHeight="499"
+			   skinClass="skins.ApplicationSkin"
+			   initialize="application1_initializeHandler(event)"
+			   >
 	<s:layout>
 		<s:BasicLayout/>
 	</s:layout>
@@ -17,6 +18,8 @@
 			import classes.UIController;
 			
 			import events.ChannelChangeEvent;
+			import events.UserFailedLoginEvent;
+			import events.UserLoggedInEvent;
 			
 			import mx.controls.Alert;
 			import mx.events.FlexEvent;
@@ -29,44 +32,44 @@
 				controller = UIController.instance;
 				fscommand("loaded");
 				
+				// handle events
+				controller.user.addEventListener("userLoggedIn", user_loggedIn);
+				controller.user.addEventListener("userFailedLogin", user_failedLogin);
+				
 				CONFIG::ON_PC {
 					ExternalInterface.addCallback("FL_setDeviceConnection", FL_setDeviceConnection);
 				}
 			}
 			
-			protected function channelBar_channelChangeHandler(event:ChannelChangeEvent):void
-			{
-				viewstack.selectedIndex = event.newChannelIndex;
-			}
-			
 			private function FL_setDeviceConnection(args:String):void
 			{
 				controller.deviceDisk.connected = (args=="1");
-				lblDeviceStatus.text = controller.deviceDisk.connectStatus;
+			}
+			
+			private function user_loggedIn(event:UserLoggedInEvent):void
+			{
+				//loginForm.visible = false;
+				contentContainer.visible = true;
+			}
+			
+			private function user_failedLogin(event:UserFailedLoginEvent):void
+			{
 			}
 		]]>
 	</fx:Script>
+	<fx:Style source="css/global.css"/>
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<s:Group id="pnlTop" height="79">
-		<s:Image width="796" source="@Embed('assets/top-bar.png')" fillMode="clip"/>
-	</s:Group>
-	<mx:ViewStack id="viewstack" left="0" right="0" top="79" bottom="30">
-		<s:NavigatorContent id="storePage" width="100%" height="100%">
-			<local:StorePage width="100%" height="100%"/>
-		</s:NavigatorContent>
-		<s:NavigatorContent id="syncPage" width="100%" height="100%">
-			<local:SynctoolPage width="100%" height="100%"/>
-		</s:NavigatorContent>
-		<s:NavigatorContent id="downloadPage" width="100%" height="100%">
-			<local:DownloadPage width="100%" height="100%"/>
-		</s:NavigatorContent>
-	</mx:ViewStack>
-	<mx:HBox backgroundColor="0x61ad6c" left="0" right="0" bottom="0" height="30" paddingRight="10">
-		<s:Spacer width="100%"/>
-		<s:Label id="lblDeviceStatus" right="10" height="100%" color="#333333" fontWeight="normal"
-				 text="{controller.deviceDisk.connectStatus}" verticalAlign="middle"/>
-	</mx:HBox>
-	<components:ChannelBar id="channelBar" x="40" y="7" width="320" height="112" channelChange="channelBar_channelChangeHandler(event)"/>
+	<s:VGroup width="100%" height="100%">
+		<s:HGroup width="100%" height="27">
+			<s:Label text="童伴1号同步助手" height="100%" verticalAlign="bottom" fontSize="14" color="#AAAAAA" paddingLeft="20"/>
+			<s:Spacer width="100%"/>
+			<s:Image source="@Embed(source='assets/btn-close.jpg')" width="45" height="27" click="fscommand('quit')"/>
+			<s:Spacer width="5"/>
+		</s:HGroup>
+		<s:HGroup horizontalAlign="center" verticalAlign="middle" width="100%" height="100%">
+			<!--<components:LoginForm id="loginForm" width="414" height="212" horizontalCenter="0" verticalCenter="0"/>-->
+			<components:ContentContainer id="contentContainer" width="100%" height="100%" visible="true" includeInLayout="true"/>
+		</s:HGroup>
+	</s:VGroup>
 </s:Application>

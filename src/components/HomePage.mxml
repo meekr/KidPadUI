@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
+		 xmlns:components="components.*"
+		 xmlns:classes="classes.*">
+	<fx:Script>
+		<![CDATA[
+			import classes.UIController;
+		]]>
+	</fx:Script>
+	<fx:Declarations>
+	</fx:Declarations>
+	<fx:Binding source="UIController.instance.deviceDisk.usage" destination="rcPercentage.percentWidth"/>
+	<s:Rect width="100%" height="100%">
+		<s:fill>
+			<s:SolidColor color="#FFFFFF"/>
+		</s:fill>
+	</s:Rect>
+	<s:Group width="100%" height="100%">
+		<s:Label x="34" y="14" width="166" height="33" fontSize="21" text="账户信息"/>
+		<s:Label x="34" y="52" fontSize="15" text="账户余额：9832元"/>
+		<s:Label x="386" y="52" fontSize="15" text="已付费内容："/>
+		<s:Label x="34" y="210" width="166" height="33" fontSize="21" text="设备信息"/>
+		<mx:HRule y="164" left="34" right="34" height="1"/>
+		<s:Label x="34" y="248" fontSize="15" text="已同步数据："/>
+		<s:Label x="386" y="248" fontSize="15" text="{UIController.instance.deviceDisk.volumeStatus}"/>
+		<s:Label styleName="button" x="34" y="84" text="充值" click="trace('fund')"/>
+		<s:Label styleName="button" x="386" y="84" text="下载" click="trace('fund')"/>
+		<s:Label styleName="button" x="34" y="281" text="同步" click="trace('fund')"/>
+		<s:Group y="281" left="386" right="34" height="16">
+			<s:Rect width="100%" height="100%">
+				<s:fill>
+					<s:SolidColor color="#DDDDDD"/>
+				</s:fill>
+			</s:Rect>
+			<s:Rect id="rcPercentage" height="100%">
+				<s:fill>
+					<s:SolidColor color="#99cc00"/>
+				</s:fill>
+			</s:Rect>
+		</s:Group>
+		
+	</s:Group>
+</s:Group>
