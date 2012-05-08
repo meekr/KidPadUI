@@ -8,8 +8,14 @@ package classes
 	[Bindable]
 	public class AppItem
 	{
+		public var id:String;
 		public var name:String;
+		public var description:String;
 		public var category:String;
+		
+		public var npkUrl:String;
+		public var iconUrl:String;
+		
 		// Base64 encoded
 		public var iconBase64:String;
 		public var iconFile:String;

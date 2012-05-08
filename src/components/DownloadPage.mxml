@@ -1,13 +1,101 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
+		 xmlns:components="components.*"
+		 xmlns:classes="classes.*"
+		 creationComplete="group1_creationCompleteHandler(event)">
+	<fx:Script>
+		<![CDATA[
+			import classes.AppItem;
+			import classes.Constants;
+			import classes.UIController;
+			
+			import mx.events.FlexEvent;
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				cate1Button.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+			}
+			
+			protected function cateButton_clickHandler(event:MouseEvent):void
+			{
+				// update visual appearance
+				var button:KPButton = event.currentTarget as KPButton;
+				button.currentState = "selected";
+				for (var i:int=1; i<=2; i++) {
+					var id:String = "cate" + i + "Button";
+					if (id == button.id) continue;
+					var btn:KPButton = this[id];
+					btn.currentState = "notSelected";
+				}
+				
+				if (button.id == "cate1Button") {
+					productList.visible = true;
+					downloadList.visible = false;
+				}
+				else {
+					productList.visible = false;
+					downloadList.visible = true;
+				}
+			}
+		]]>
+	</fx:Script>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<s:Rect width="100%" height="100%">
+	<s:Rect width="100%" height="64">
 		<s:fill>
-			<s:SolidColor color="#0000FF"/>
+			<s:SolidColor color="#f2f2f2"/>
 		</s:fill>
 	</s:Rect>
+	<s:Rect x="0" y="64" width="100%" height="100%">
+		<s:fill>
+			<s:SolidColor color="#ffffff"/>
+		</s:fill>
+	</s:Rect>
+	<s:VGroup width="100%" height="100%" gap="0">
+		<s:HGroup width="100%" height="40" verticalAlign="middle" paddingLeft="10" paddingRight="10">
+			<components:KPButton id="cate1Button" text="已下载" click="cateButton_clickHandler(event)" currentState="notSelected"/>
+			<components:KPButton id="cate2Button" text="下载中" click="cateButton_clickHandler(event)" currentState="notSelected"/>
+			<s:Spacer width="100%"/>
+			<s:Group width="232" height="25">
+				<s:Image source="@Embed(source='assets/search-bg.jpg')" width="100%" height="100%"/>
+				<s:TextInput text="please enter to search" width="187" height="100%"/>
+				<s:Label x="187" width="45" height="100%" click="trace('search...')"/>
+			</s:Group>
+		</s:HGroup>
+		<mx:HRule width="100%" height="1"/>
+		<s:HGroup width="100%" height="20" verticalAlign="middle" paddingLeft="10" paddingRight="10" gap="5">
+			<s:Label text="全部"/>
+			<s:Label text="图书"/>
+			<s:Label text="应用"/>
+			<s:Label text="游戏"/>
+			<s:Spacer width="100%"/>
+			<s:Label text="全选"/>
+			<s:Label text="全不选"/>
+			<s:Label text="只选择未同步"/>
+		</s:HGroup>
+		<s:Group width="100%" height="100%">
+			<s:List id="productList" width="100%" height="100%"
+					skinClass="skins.MyListSkin"
+					itemRenderer="components.AppListItemRenderer"
+					visible="false">
+				<s:layout>
+					<s:TileLayout/>
+				</s:layout>
+			</s:List>
+			<s:List id="downloadList" width="100%" height="100%"
+					skinClass="skins.MyListSkin"
+					itemRenderer="renderers.DownloadListItemRenderer"
+					visible="false"
+					rollOverColor="#efefef"
+					dataProvider="{UIController.instance.downloadItems}">
+				<s:layout>
+					<s:VerticalLayout gap="0"/>
+				</s:layout>
+			</s:List>
+		</s:Group>
+	</s:VGroup>
+	<components:KPButton id="numDownloadIndicator" text="10" currentState="indicator" x="130" y="6"/>
 </s:Group>

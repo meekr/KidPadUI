@@ -7,10 +7,17 @@
 	<fx:Script>
 		<![CDATA[
 			import classes.UIController;
+			
+			protected function channel_clickHandler(index:int):void
+			{
+				viewStack.selectedIndex = index;
+				channelIndicator.visible = index > 0;
+				channelIndicator.y = 117 + (index-1)*67;
+			}
+			
 		]]>
 	</fx:Script>
 	<fx:Declarations>
-		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
 	<s:Rect width="100%" height="100%">
 		<s:fill>
@@ -38,15 +45,15 @@
 		</s:fill>
 	</s:Rect>
 	<s:VGroup id="leftTabBar" gap="0">
-		<s:Group width="100%" height="110" click="viewStack.selectedIndex=0">
+		<s:Group width="100%" height="110" click="channel_clickHandler(0)">
 			<mx:Image id="avatar" source="" x="13" y="13" width="64" height="64"/>
 			<s:Label x="91" y="10" width="123" height="25" text="{UIController.instance.user.username}"/>
 			<s:Label x="13" y="82" width="199" height="18" text="{UIController.instance.deviceDisk.connectStatus}"/>
 			
 		</s:Group>
-		<s:Label styleName="whiteTitle" width="224" height="67" text="应用商店" verticalAlign="middle" click="viewStack.selectedIndex=1"/>
-		<s:Label styleName="whiteTitle" width="224" height="67" text="下载管理" verticalAlign="middle" click="viewStack.selectedIndex=2"/>
-		<s:Label styleName="whiteTitle" width="224" height="67" text="设备管理" verticalAlign="middle" click="viewStack.selectedIndex=3"/>
+		<s:Label styleName="whiteTitle" width="224" height="67" text="应用商店" verticalAlign="middle" click="channel_clickHandler(1)"/>
+		<s:Label styleName="whiteTitle" width="224" height="67" text="下载管理" verticalAlign="middle" click="channel_clickHandler(2)"/>
+		<s:Label styleName="whiteTitle" width="224" height="67" text="设备管理" verticalAlign="middle" click="channel_clickHandler(3)"/>
 	</s:VGroup>
 	<mx:ViewStack id="viewStack" x="224" y="10" width="100%" height="100%">
 		<s:NavigatorContent width="100%" height="100%">
@@ -62,4 +69,5 @@
 			<components:DevicePage width="100%" height="100%"/>
 		</s:NavigatorContent>
 	</mx:ViewStack>
+	<s:Image id="channelIndicator" source="@Embed(source='assets/channel-selected-arrow.jpg')" x="205" y="117" width="19" height="53" visible="false"/>
 </s:Group>

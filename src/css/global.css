@@ -1,6 +1,7 @@
 /* CSS file */
 @namespace s "library://ns.adobe.com/flex/spark";
 @namespace mx "library://ns.adobe.com/flex/mx";
+@namespace components "components.*";
 
 @font-face {
 	src:url("../assets/Microsoft Yahei.ttf");
@@ -16,7 +17,7 @@ s|Application {
 
 s|TextInput {
 	borderVisible:false;
-	fontSize:17pt;
+	fontSize:12;
 	paddingLeft:0;
 	paddingRight:0;
 	paddingTop:0;
@@ -24,6 +25,10 @@ s|TextInput {
 }
 
 s|Label {
+	fontSize:12px;
+}
+
+components|HomePage s|Label {
 	fontSize:17pt;
 }
 
@@ -37,14 +42,4 @@ s|Label.whiteTitle {
 	color:#FFFFFF;
 	fontSize:14pt;
 	textAlign:center;
-}
-
-s|Label.button {
-	backgroundColor:#7cbc12;
-	color:#FFFFFF;
-	fontSize:12pt;
-	paddingTop:6px;
-	paddingBottom:6px;
-	paddingLeft:12px;
-	paddingRight:12px;
 }

@@ -29,6 +29,9 @@ package classes
 		[Bindable]
 		public var appsOnPc:ArrayCollection;
 		
+		[Bindable]
+		public var downloadItems:ArrayCollection;
+		
 		public function UIController()
 		{
 			// setup communicate pipe
@@ -38,6 +41,28 @@ package classes
 			}
 			user = new User();
 			deviceDisk = new DeviceDisk();
+			
+			downloadItems = new ArrayCollection();
+			// demo data
+			var item:Download = new Download();
+			item.appName = "小蝌蚪找妈妈";
+			item.percentage = 34;
+			downloadItems.addItem(item);
+			
+			item = new Download();
+			item.appName = "哇哈哈";
+			item.percentage = 22;
+			downloadItems.addItem(item);
+			
+			item = new Download();
+			item.appName = "哇哈哈werwer";
+			item.percentage = 0;
+			downloadItems.addItem(item);
+			
+			item = new Download();
+			item.appName = "EEEE sadfas";
+			item.percentage = 89;
+			downloadItems.addItem(item);
 		}
 		
 		public static function get instance():UIController
@@ -129,6 +154,36 @@ package classes
 					// TODO: update category, iconFile, etc.
 					appsOnDevice.addItemAt(app, 0);
 				}
+			}
+		}
+		
+		/*****************
+		 * downloading ***
+		 *****************/
+		public function deleteDownload(item:Download):Boolean
+		{
+			var index:int = downloadItems.getItemIndex(item);
+			if (index > -1)
+			{
+				downloadItems.removeItemAt(index);
+				return true;
+			}
+			return false;
+		}
+		
+		public function pauseDownload(item:Download):void
+		{
+			var index:int = downloadItems.getItemIndex(item);
+			if (index > -1)
+			{
+			}
+		}
+		
+		public function resumeDownload(item:Download):void
+		{
+			var index:int = downloadItems.getItemIndex(item);
+			if (index > -1)
+			{
 			}
 		}
 	}

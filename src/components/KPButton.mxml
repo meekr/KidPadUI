@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<s:states>
+		<s:State name="default"/>
+		<s:State name="selected"/>
+		<s:State name="notSelected"/>
+		<s:State name="indicator"/>
+	</s:states>
+	<fx:Declarations>
+		<fx:String id="text"/>
+		<fx:Number id="fontSize">12</fx:Number>
+		<fx:Number id="radius">0</fx:Number>
+		<fx:Number id="backgroundColor">#7cbc12</fx:Number>
+	</fx:Declarations>
+	<fx:Style>
+		@namespace s "library://ns.adobe.com/flex/spark";
+		@namespace mx "library://ns.adobe.com/flex/mx";
+	</fx:Style>
+	<s:Rect width="100%" height="100%"
+			radiusX="{radius}" radiusY="{radius}"
+			radiusX.selected="6" radiusY.selected="6"
+			radiusX.indicator="5" radiusY.indicator="5">
+		<s:fill>
+			<s:SolidColor color="{backgroundColor}"
+						  color.selected="#ee7119"
+						  color.indicator="#ee7119"
+						  color.notSelected="#FFFFFF"
+						  alpha.notSelected="0"/>
+		</s:fill>
+	</s:Rect>
+	<s:Label text="{text}"
+			 color="#FFFFFF" color.notSelected="#666666"
+			 fontSize="{fontSize}"
+			 fontSize.indicator="8"
+			 paddingLeft="12" paddingRight="12" paddingTop="6" paddingBottom="6"
+			 paddingLeft.indicator="2" paddingRight.indicator="2" paddingTop.indicator="2" paddingBottom.indicator="2"
+			 />
+</s:Group>
