@@ -46,23 +46,23 @@ package classes
 			// demo data
 			var item:Download = new Download();
 			item.appName = "小蝌蚪找妈妈";
-			item.percentage = 34;
 			downloadItems.addItem(item);
+			item.startDownload();
 			
 			item = new Download();
 			item.appName = "哇哈哈";
-			item.percentage = 22;
 			downloadItems.addItem(item);
+			item.startDownload();
 			
 			item = new Download();
 			item.appName = "哇哈哈werwer";
-			item.percentage = 0;
 			downloadItems.addItem(item);
+			item.startDownload();
 			
 			item = new Download();
 			item.appName = "EEEE sadfas";
-			item.percentage = 89;
 			downloadItems.addItem(item);
+			item.startDownload();
 		}
 		
 		public static function get instance():UIController
@@ -165,6 +165,7 @@ package classes
 			var index:int = downloadItems.getItemIndex(item);
 			if (index > -1)
 			{
+				item.cancelDownload();
 				downloadItems.removeItemAt(index);
 				return true;
 			}
@@ -173,6 +174,8 @@ package classes
 		
 		public function pauseDownload(item:Download):void
 		{
+			item.percentage += 10;
+			trace(item.percentage);
 			var index:int = downloadItems.getItemIndex(item);
 			if (index > -1)
 			{

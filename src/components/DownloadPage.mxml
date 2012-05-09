@@ -97,5 +97,5 @@
 			</s:List>
 		</s:Group>
 	</s:VGroup>
-	<components:KPButton id="numDownloadIndicator" text="10" currentState="indicator" x="130" y="6"/>
+	<components:KPButton id="numDownloadIndicator" text="{UIController.instance.downloadItems.length}" currentState="indicator" x="130" y="6"/>
 </s:Group>
