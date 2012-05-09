@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:HGroup xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		  xmlns:s="library://ns.adobe.com/flex/spark" 
+		  xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<!-- Place non-visual elements (e.g., services, value objects) here -->
+	</fx:Declarations>
+	<s:Label text="童伴1号同步助手" height="100%" verticalAlign="bottom" fontSize="14" color="#AAAAAA" paddingLeft="20"/>
+	<s:Spacer width="100%"/>
+	<s:Image source="@Embed(source='assets/btn-close.jpg')" width="45" height="27" click="fscommand('quit')"/>
+	<s:Spacer width="5"/>
+</s:HGroup>
