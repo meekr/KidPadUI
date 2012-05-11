@@ -17,8 +17,9 @@ package classes
 	{
 		public var username:String = "NONE";
 		public var password:String;
-		public var state:String = "valid";
 		public var token:String;
+		
+		public var loggedIn:Boolean;
 		
 		public function User()
 		{
@@ -40,22 +41,18 @@ package classes
 		private function resultListener(event:ResultEvent):void {
 			var json:String = String(event.result);
 			var obj:Object = JSON.parse(json);
-			this.state = obj.state;
-			if (this.isLoggedIn) {
+			if (obj.state == "valid") {
+				this.loggedIn = true;
 				this.token = obj.token;
 				var ev:UserLoggedInEvent = new UserLoggedInEvent();
 				this.dispatchEvent(new UserLoggedInEvent());
 			}
 			else {
+				this.loggedIn = false;
 				var ev2:UserFailedLoginEvent = new UserFailedLoginEvent();
 				ev2.error = "invalid username or password";
 				this.dispatchEvent(ev2);
 			}
-		}
-		
-		public function get isLoggedIn():Boolean
-		{
-			return (state == "valid");
 		}
 	}
 }

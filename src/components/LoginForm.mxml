@@ -26,7 +26,7 @@
 			<s:Label text="用户名" width="60"/>
 			<components:KPTextInput id="username"
 									color="#ffffff"
-									text=""
+									text="rayice"
 									skinClass="skins.KPTextInputSkin"
 									width="188" height="28"
 									contentBackgroundColor="#63e8fb"
@@ -36,7 +36,7 @@
 			<s:Label text="密  码" width="60"/>
 			<components:KPTextInput id="password"
 									color="#ffffff"
-									text=""
+									text="123456"
 									displayAsPassword="true"
 									skinClass="skins.KPTextInputSkin"
 									width="188" height="28"

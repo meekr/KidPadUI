@@ -5,6 +5,7 @@ package classes
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
+	import mx.rpc.http.HTTPService;
 	
 	import spark.components.List;
 	
@@ -45,6 +46,7 @@ package classes
 				ExternalInterface.addCallback("FL_findNRDGameStoryAndAppRoot", FL_findNRDGameStoryAndAppRoot);
 				ExternalInterface.addCallback("FL_setDiskVolumnStatus", FL_setDiskVolumnStatus);
 			}
+			
 			user = new User();
 			deviceDisk = new DeviceDisk();
 			
@@ -114,7 +116,6 @@ package classes
 			}
 			return mInstance;
 		}
-		
 		
 		// methods invoke UI
 		private function FL_findNRDGameStoryAndAppRoot(args:String):void

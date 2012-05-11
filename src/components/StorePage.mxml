@@ -10,6 +10,7 @@
 			import classes.AppItem;
 			import classes.Constants;
 			import classes.UIController;
+			import classes.DataController;
 			
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
@@ -27,31 +28,8 @@
 					var btn:KPButton = this[id];
 					btn.currentState = "notSelected";
 				}
-				return;
 				
-				// call service
-				var listService:HTTPService = new HTTPService();
-				listService.url = Constants.DOMAIN + "client/product/list";
-				listService.method = "POST";
-				listService.resultFormat = "text";
-				listService.addEventListener(ResultEvent.RESULT, listResultListener);
-				listService.showBusyCursor = true;
-				listService.send(this);
-			}
-			
-			private function listResultListener(event:ResultEvent):void {
-				var json:String = String(event.result);
-				var obj:Object = JSON.parse(json);
-				var products:Array = obj.products;
-				var appItems:ArrayCollection = new ArrayCollection();
-				for (var i:int=0; i<products.length; i++) {
-					var app:AppItem = new AppItem();
-					app.name = products[i].name;
-					app.description = products[i].content;
-					app.iconUrl = "http://vi1.ku6img.com/data1/p4/ku6video/2012/1/18/2/1330079891972_14699898_14699898/6.jpg";
-					appItems.addItem(app);
-				}
-				//productList.dataProvider = appItems;
+				DataController.instance.getStoreProductList();
 			}
 			
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
@@ -102,10 +80,13 @@
 			<s:Label text="限时免费"/>
 		</s:HGroup>
 		<s:Group width="100%" height="100%">
+			<s:Label y="20" text="正在努力从网络获取数据..." fontSize="14" horizontalCenter="0"
+					 visible="{DataController.instance.retrievingStoreList}" includeInLayout="{DataController.instance.retrievingStoreList}"/>
 			<s:List id="list" left="20" right="0" top="5" bottom="0"
 					skinClass="skins.MyListSkin"
 					itemRenderer="renderers.ThumbnailItemRenderer"
-					dataProvider="{UIController.instance.itemsOnStore}">
+					dataProvider="{DataController.instance.itemsOnStore}"
+					visible="{!DataController.instance.retrievingStoreList}">
 				<s:layout>
 					<s:TileLayout requestedColumnCount="2" paddingTop="20" paddingBottom="20" verticalGap="20" horizontalGap="20"
 								  />
