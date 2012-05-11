@@ -9,10 +9,21 @@
 	advancedAntiAliasing: true;
 }
 
+@font-face {
+	src:url("../assets/Microsoft Yahei.ttf");
+	fontFamily: myFontFamily2;
+	advancedAntiAliasing: true;
+	embedAsCFF:false;
+}
+
 s|Application {
 	color:#666666;
 	fontFamily:myFontFamily;
 	fontWeight:normal;
+}
+
+mx|Text {
+	fontFamily:myFontFamily2;
 }
 
 s|TextInput {

@@ -70,4 +70,5 @@
 		</s:NavigatorContent>
 	</mx:ViewStack>
 	<s:Image id="channelIndicator" source="@Embed(source='assets/channel-selected-arrow.jpg')" x="205" y="117" width="19" height="53" visible="false"/>
+	<components:KPButton text="{UIController.instance.itemsDownloading.length}" currentState="indicator" x="138" y="198" visible="{UIController.instance.itemsDownloading.length>0}"/>
 </s:Group>

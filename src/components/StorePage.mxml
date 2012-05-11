@@ -9,6 +9,7 @@
 		<![CDATA[
 			import classes.AppItem;
 			import classes.Constants;
+			import classes.UIController;
 			
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
@@ -26,6 +27,7 @@
 					var btn:KPButton = this[id];
 					btn.currentState = "notSelected";
 				}
+				return;
 				
 				// call service
 				var listService:HTTPService = new HTTPService();
@@ -49,7 +51,7 @@
 					app.iconUrl = "http://vi1.ku6img.com/data1/p4/ku6video/2012/1/18/2/1330079891972_14699898_14699898/6.jpg";
 					appItems.addItem(app);
 				}
-				productList.dataProvider = appItems;
+				//productList.dataProvider = appItems;
 			}
 			
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
@@ -80,7 +82,12 @@
 			<s:Spacer width="100%"/>
 			<s:Group width="232" height="25">
 				<s:Image source="@Embed(source='assets/search-bg.jpg')" width="100%" height="100%"/>
-				<s:TextInput text="please enter to search" width="187" height="100%"/>
+				<components:KPTextInput id="searchBox"
+										text="输入关键字查找"
+										skinClass="skins.KPTextInputSkin"
+										width="187" height="100%"
+										backgroundAlpha="0"
+										borderWeight="0"/>
 				<s:Label x="187" width="45" height="100%" click="trace('search...')"/>
 			</s:Group>
 		</s:HGroup>
@@ -94,12 +101,16 @@
 			<s:Label text="最热"/>
 			<s:Label text="限时免费"/>
 		</s:HGroup>
-		<s:List id="productList" width="100%" height="100%"
-				skinClass="skins.AppListSkin"
-				itemRenderer="components.AppListItemRenderer">
-			<s:layout>
-				<s:TileLayout/>
-			</s:layout>
-		</s:List>
+		<s:Group width="100%" height="100%">
+			<s:List id="list" left="20" right="0" top="5" bottom="0"
+					skinClass="skins.MyListSkin"
+					itemRenderer="renderers.ThumbnailItemRenderer"
+					dataProvider="{UIController.instance.itemsOnStore}">
+				<s:layout>
+					<s:TileLayout requestedColumnCount="2" paddingTop="20" paddingBottom="20" verticalGap="20" horizontalGap="20"
+								  />
+				</s:layout>
+			</s:List>
+		</s:Group>
 	</s:VGroup>
 </s:Group>

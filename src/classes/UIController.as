@@ -30,7 +30,13 @@ package classes
 		public var appsOnPc:ArrayCollection;
 		
 		[Bindable]
-		public var downloadItems:ArrayCollection;
+		public var itemsDownloading:ArrayCollection;
+		[Bindable]
+		public var itemsOnDevice:ArrayCollection;
+		[Bindable]
+		public var itemsOnPc:ArrayCollection;
+		[Bindable]
+		public var itemsOnStore:ArrayCollection;
 		
 		public function UIController()
 		{
@@ -42,27 +48,62 @@ package classes
 			user = new User();
 			deviceDisk = new DeviceDisk();
 			
-			downloadItems = new ArrayCollection();
+			itemsDownloading = new ArrayCollection();
+			itemsOnDevice = new ArrayCollection();
+			itemsOnPc = new ArrayCollection();
+			itemsOnStore = new ArrayCollection();
+			
 			// demo data
 			var item:Download = new Download();
 			item.appName = "小蝌蚪找妈妈";
-			downloadItems.addItem(item);
+			item.url = "http://download.macromedia.com/pub/developer/flash/Flash_Lite_4.zip";
+			itemsDownloading.addItem(item);
 			item.startDownload();
 			
 			item = new Download();
 			item.appName = "哇哈哈";
-			downloadItems.addItem(item);
+			item.url = "http://livedocs.adobe.com/flash/9.0/main/samples/Flash_Lite_1x.zip";
+			itemsDownloading.addItem(item);
 			item.startDownload();
 			
 			item = new Download();
 			item.appName = "哇哈哈werwer";
-			downloadItems.addItem(item);
+			item.url = "http://download.macromedia.com/pub/developer/flash/Flash_Lite_4.zip";
+			itemsDownloading.addItem(item);
 			item.startDownload();
 			
 			item = new Download();
 			item.appName = "EEEE sadfas";
-			downloadItems.addItem(item);
+			item.url = "http://livedocs.adobe.com/flash/9.0/main/samples/Flash_Lite_1x.zip";
+			itemsDownloading.addItem(item);
 			item.startDownload();
+			
+			for (var i:int=0; i<20; i++) {
+				var app:AppItem = new AppItem();
+				app.name = "三只小猪-"+(i+1);
+				app.description = "撒旦法为二位为切尔去玩儿阿斯顿法师打发玩儿去玩儿";
+				app.type = AppItemType.PC;
+				app.iconUrl = "http://t3.gstatic.com/images?q=tbn:ANd9GcRZDfYRwCBKmbeC-_ONcbndgTrNnasQiXcjmyt6I9vOG_PJDdctBw8vBLA";
+				itemsOnPc.addItem(app);
+			}
+			
+			for (i=40; i<70; i++) {
+				app = new AppItem();
+				app.name = "我的应用-"+(i+1);
+				app.description = "撒旦法为二位为切尔dffs sdsds\nsdsssssseee eee\n去玩儿阿斯顿法师打发玩儿去玩儿";
+				app.type = AppItemType.DEVICE;
+				app.iconUrl = "http://t3.gstatic.com/images?q=tbn:ANd9GcRZDfYRwCBKmbeC-_ONcbndgTrNnasQiXcjmyt6I9vOG_PJDdctBw8vBLA";
+				itemsOnDevice.addItem(app);
+			}
+			
+			for (i=32; i<91; i++) {
+				app = new AppItem();
+				app.name = "我的应用-"+(i+1);
+				app.description = "撒旦法为二位为切尔dffs sdsds\nsdsssssseee eee\n去玩儿阿斯顿法师打发玩儿去玩儿";
+				app.type = AppItemType.STORE;
+				app.iconUrl = "http://t3.gstatic.com/images?q=tbn:ANd9GcRZDfYRwCBKmbeC-_ONcbndgTrNnasQiXcjmyt6I9vOG_PJDdctBw8vBLA";
+				itemsOnStore.addItem(app);
+			} 
 		}
 		
 		public static function get instance():UIController
@@ -162,11 +203,11 @@ package classes
 		 *****************/
 		public function deleteDownload(item:Download):Boolean
 		{
-			var index:int = downloadItems.getItemIndex(item);
+			var index:int = itemsDownloading.getItemIndex(item);
 			if (index > -1)
 			{
 				item.cancelDownload();
-				downloadItems.removeItemAt(index);
+				itemsDownloading.removeItemAt(index);
 				return true;
 			}
 			return false;
@@ -174,19 +215,19 @@ package classes
 		
 		public function pauseDownload(item:Download):void
 		{
-			item.percentage += 10;
-			trace(item.percentage);
-			var index:int = downloadItems.getItemIndex(item);
+			var index:int = itemsDownloading.getItemIndex(item);
 			if (index > -1)
 			{
+				item.pauseDownload();
 			}
 		}
 		
 		public function resumeDownload(item:Download):void
 		{
-			var index:int = downloadItems.getItemIndex(item);
+			var index:int = itemsDownloading.getItemIndex(item);
 			if (index > -1)
 			{
+				item.resumeDownload();
 			}
 		}
 	}

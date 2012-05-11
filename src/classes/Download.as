@@ -2,11 +2,17 @@ package classes
 {
 	import classes.DownloadStatus;
 	
+	import flash.external.*;
 	import flash.events.Event;
 	import flash.events.ProgressEvent;
 	import flash.net.FileReference;
 	import flash.net.URLLoader;
+	import flash.net.URLLoaderDataFormat;
 	import flash.net.URLRequest;
+	import flash.utils.ByteArray;
+	
+	import mx.controls.Alert;
+	import mx.utils.Base64Encoder;
 	
 	[Bindable]
 	public class Download
@@ -14,7 +20,7 @@ package classes
 		public var appName:String;
 		public var percentage:Number;
 		public var status:String;
-		public var url:String = "http://livedocs.adobe.com/flash/9.0/main/samples/Flash_ActionScript3.0_samples.zip";
+		public var url:String;
 		
 		private var loader:URLLoader;
 		
@@ -24,6 +30,7 @@ package classes
 			status = DownloadStatus.NOT_STARTED;
 			
 			loader = new URLLoader();
+			loader.dataFormat = URLLoaderDataFormat.BINARY;
 			loader.addEventListener(Event.OPEN, openHandler);
 			loader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
 			loader.addEventListener(Event.COMPLETE, completeHandler);
@@ -31,9 +38,20 @@ package classes
 		
 		public function startDownload():void
 		{
+			return;
 			var request:URLRequest = new URLRequest();
 			request.url = url;
 			loader.load(request);
+		}
+		
+		public function pauseDownload():void
+		{
+			
+		}
+		
+		public function resumeDownload():void
+		{
+			
 		}
 		
 		public function cancelDownload():void
@@ -58,6 +76,16 @@ package classes
 		{
 			status = DownloadStatus.COMPLETED;
 			percentage = 100;
+			
+			var buf:ByteArray = loader.data;
+			var base64Enc:Base64Encoder = new Base64Encoder();
+			base64Enc.encodeBytes(loader.data, 0, buf.length);
+			var str:String = base64Enc.toString();
+			CONFIG::ON_PC {
+				ExternalInterface.call("F2C_saveNpkFromBase64", appName+","+str);
+			}
+			
+			UIController.instance.deleteDownload(this);
 		}
 	}
 }

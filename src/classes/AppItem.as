@@ -12,6 +12,8 @@ package classes
 		public var name:String;
 		public var description:String;
 		public var category:String;
+		public var selected:Boolean;
+		public var type:String;
 		
 		public var npkUrl:String;
 		public var iconUrl:String;
@@ -40,6 +42,21 @@ package classes
 				return base64Dec.toByteArray();
 			}
 			return null;
+		}
+		
+		public function isDeviceType():Boolean
+		{
+			return type == AppItemType.DEVICE;
+		}
+		
+		public function isPcType():Boolean
+		{
+			return type == AppItemType.PC;
+		}
+		
+		public function isStoreType():Boolean
+		{
+			return type == AppItemType.STORE;
 		}
 	}
 }

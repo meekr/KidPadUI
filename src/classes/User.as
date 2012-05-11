@@ -17,7 +17,7 @@ package classes
 	{
 		public var username:String = "NONE";
 		public var password:String;
-		public var state:String;
+		public var state:String = "valid";
 		public var token:String;
 		
 		public function User()

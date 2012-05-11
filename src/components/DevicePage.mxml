@@ -1,13 +1,76 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
+		 xmlns:components="components.*"
+		 xmlns:classes="classes.*">
+	<fx:Script>
+		<![CDATA[
+			import classes.UIController;
+		]]>
+	</fx:Script>
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<s:Rect width="100%" height="100%">
+	<fx:Binding source="UIController.instance.deviceDisk.usage" destination="rcPercentage.percentWidth"/>
+	<s:Rect width="100%" height="64">
 		<s:fill>
-			<s:SolidColor color="#FFFF00"/>
+			<s:SolidColor color="#f2f2f2"/>
 		</s:fill>
 	</s:Rect>
+	<s:Rect x="0" y="64" width="100%" height="100%">
+		<s:fill>
+			<s:SolidColor color="#ffffff"/>
+		</s:fill>
+	</s:Rect>
+	<s:VGroup width="100%" height="100%" gap="0">
+		<s:HGroup width="100%" height="40" verticalAlign="middle" paddingLeft="10" paddingRight="10">
+			<s:Label text="设备容量"/>
+			<s:Group width="390" height="16">
+				<s:Rect width="100%" height="100%">
+					<s:fill>
+						<s:SolidColor color="#DDDDDD"/>
+					</s:fill>
+				</s:Rect>
+				<s:Rect id="rcPercentage" height="100%">
+					<s:fill>
+						<s:SolidColor color="#99cc00"/>
+					</s:fill>
+				</s:Rect>
+			</s:Group>
+			<s:Spacer width="100%"/>
+			<s:Group width="232" height="25">
+				<s:Image source="@Embed(source='assets/search-bg.jpg')" width="100%" height="100%"/>
+				<components:KPTextInput id="searchBox"
+										text="输入关键字查找"
+										skinClass="skins.KPTextInputSkin"
+										width="187" height="100%"
+										backgroundAlpha="0"
+										borderWeight="0"/>
+				<s:Label x="187" width="45" height="100%" click="trace('search...')"/>
+			</s:Group>
+		</s:HGroup>
+		<mx:HRule width="100%" height="1"/>
+		<s:HGroup width="100%" height="20" verticalAlign="middle" paddingLeft="10" paddingRight="10" gap="5">
+			<s:Label text="全部"/>
+			<s:Label text="图书"/>
+			<s:Label text="应用"/>
+			<s:Label text="游戏"/>
+			<s:Spacer width="100%"/>
+			<s:Label text="全选"/>
+			<s:Label text="全不选"/>
+			<s:Label text="从设备删除"/>
+		</s:HGroup>
+		<s:Group width="100%" height="100%">
+			<s:List left="20" right="0" top="5" bottom="0"
+					skinClass="skins.MyListSkin"
+					itemRenderer="renderers.ThumbnailItemRenderer"
+					dataProvider="{UIController.instance.itemsOnDevice}">
+				<s:layout>
+					<s:TileLayout requestedColumnCount="2" paddingTop="20" paddingBottom="20" verticalGap="20" horizontalGap="20"
+								  />
+				</s:layout>
+			</s:List>
+		</s:Group>
+	</s:VGroup>
 </s:Group>

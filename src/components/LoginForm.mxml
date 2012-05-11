@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
-		 xmlns:mx="library://ns.adobe.com/flex/mx" width="414" height="212">
+		 xmlns:mx="library://ns.adobe.com/flex/mx" width="414" height="212"
+		 xmlns:components="components.*"
+		 xmlns:classes="classes.*">
 	
 	<fx:Script>
 		<![CDATA[
@@ -22,11 +24,24 @@
 		<s:Label text="登录助手" fontSize="24" color="#aaaaaa" horizontalCenter="0"/>
 		<s:HGroup height="40" verticalAlign="middle">
 			<s:Label text="用户名" width="60"/>
-			<s:TextInput id="username" contentBackgroundColor="#63e8fb" color="#FFFFFF" width="188" height="28"/>
+			<components:KPTextInput id="username"
+									color="#ffffff"
+									text=""
+									skinClass="skins.KPTextInputSkin"
+									width="188" height="28"
+									contentBackgroundColor="#63e8fb"
+									/>
 		</s:HGroup>
 		<s:HGroup height="40" verticalAlign="middle">
 			<s:Label text="密  码" width="60"/>
-			<s:TextInput id="password" contentBackgroundColor="#63e8fb" color="#FFFFFF" width="188" height="28" displayAsPassword="true"/>
+			<components:KPTextInput id="password"
+									color="#ffffff"
+									text=""
+									displayAsPassword="true"
+									skinClass="skins.KPTextInputSkin"
+									width="188" height="28"
+									contentBackgroundColor="#63e8fb"
+									/>
 		</s:HGroup>
 		<s:Image id="submitButton" source="@Embed(source='assets/btn-submit.png')" horizontalCenter="-100" width="115" height="35" click="submitButton_clickHandler(event)"/>
 	</s:VGroup>

@@ -35,6 +35,6 @@
 			 fontSize="{fontSize}"
 			 fontSize.indicator="8"
 			 paddingLeft="12" paddingRight="12" paddingTop="6" paddingBottom="6"
-			 paddingLeft.indicator="2" paddingRight.indicator="2" paddingTop.indicator="2" paddingBottom.indicator="2"
+			 paddingLeft.indicator="4" paddingRight.indicator="4" paddingTop.indicator="2" paddingBottom.indicator="2"
 			 />
 </s:Group>
