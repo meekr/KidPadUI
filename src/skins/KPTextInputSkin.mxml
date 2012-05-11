@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:SparkSkin xmlns:fx="http://ns.adobe.com/mxml/2009" xmlns:s="library://ns.adobe.com/flex/spark"
+			 alpha.disabled="0.5">
+	
+	<fx:Metadata>
+		[HostComponent("components.KPTextInput")]
+	</fx:Metadata> 
+	
+	<fx:Script>
+		/* Define the skin elements that should not be colorized. */
+		static private const exclusions:Array = ["background", "textView"];
+		override public function get colorizeExclusions():Array {return exclusions;}
+		
+		/* Define the content fill items that should be colored by the "contentBackgroundColor" style. */
+		static private const contentFill:Array = ["bgFill"];
+		override public function get contentItems():Array {return contentFill};
+	</fx:Script>
+	
+	<s:states>
+		<s:State name="normal"/>
+		<s:State name="disabled"/>
+		<s:State name="focused"/>
+		<s:State name="invalid"/>
+		<s:State name="normalWithPrompt"/>
+		<s:State name="disabledWithPrompt"/>
+	</s:states>
+	
+	<!-- Transition from normal state to focused state and back -->
+	<s:transitions>
+		<s:Transition fromState="normal" toState="focused" >
+			<s:AnimateColor duration="350" targets="{[bgFill,  stroke]}" />
+		</s:Transition> 
+		<s:Transition fromState="focused" toState="normal" >
+			<s:AnimateColor duration="350" targets="{[bgFill,  stroke]}" />
+		</s:Transition> 
+	</s:transitions>
+	
+	<!-- background --> 
+	<s:Rect blendMode="normal" left="1" right="1" top="1" bottom="1" radiusX="3" radiusY="3" alpha="{hostComponent.backgroundAlpha}">
+		<s:fill >
+			<s:SolidColor id="bgFill" color="0xa2d2ff" color.focused="0xe8f8ff"  />
+		</s:fill>
+		<s:stroke>            
+			<s:SolidColorStroke id="stroke" color="0x92c2ef" color.focused="0xffffff"  weight="{hostComponent.borderWeight}" />
+		</s:stroke>
+	</s:Rect>
+	
+	<!-- text. To do: Get Properties from Component -->
+	<s:RichEditableText id="textDisplay" color.focused="0x303030" color.invalid="0xff0000" verticalAlign="middle" 
+						left="1" right="1" top="1" bottom="1" 
+						paddingLeft="3" paddingTop="5"
+						paddingRight="3" paddingBottom="3"/>
+	
+</s:SparkSkin>
