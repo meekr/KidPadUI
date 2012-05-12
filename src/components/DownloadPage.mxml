@@ -10,6 +10,7 @@
 			import classes.AppItem;
 			import classes.Constants;
 			import classes.UIController;
+			import classes.DataController;
 			
 			import mx.events.FlexEvent;
 			
@@ -115,12 +116,12 @@
 					skinClass="skins.MyListSkin"
 					itemRenderer="renderers.DownloadListItemRenderer"
 					visible="false"
-					dataProvider="{UIController.instance.itemsDownloading}">
+					dataProvider="{DataController.instance.itemsDownloading}">
 				<s:layout>
 					<s:VerticalLayout gap="0"/>
 				</s:layout>
 			</s:List>
 		</s:Group>
 	</s:VGroup>
-	<components:KPButton text="{UIController.instance.itemsDownloading.length}" currentState="indicator" x="130" y="6" visible="{UIController.instance.itemsDownloading.length>0}"/>
+	<components:KPButton text="{DataController.instance.itemsDownloading.length}" currentState="indicator" x="130" y="6" visible="{DataController.instance.itemsDownloading.length>0}"/>
 </s:Group>

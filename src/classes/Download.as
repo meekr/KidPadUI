@@ -38,7 +38,6 @@ package classes
 		
 		public function startDownload():void
 		{
-			return;
 			var request:URLRequest = new URLRequest();
 			request.url = url;
 			loader.load(request);

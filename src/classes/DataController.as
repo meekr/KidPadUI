@@ -66,5 +66,10 @@ package classes
 			}
 			this.retrievingStoreList = false;
 		}
+		
+		public function getDeviceProductList():void
+		{
+			
+		}
 	}
 }

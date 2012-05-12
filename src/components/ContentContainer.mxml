@@ -7,6 +7,7 @@
 	<fx:Script>
 		<![CDATA[
 			import classes.UIController;
+			import classes.DataController;
 			
 			protected function channel_clickHandler(index:int):void
 			{
@@ -70,5 +71,5 @@
 		</s:NavigatorContent>
 	</mx:ViewStack>
 	<s:Image id="channelIndicator" source="@Embed(source='assets/channel-selected-arrow.jpg')" x="205" y="117" width="19" height="53" visible="false"/>
-	<components:KPButton text="{UIController.instance.itemsDownloading.length}" currentState="indicator" x="138" y="198" visible="{UIController.instance.itemsDownloading.length>0}"/>
+	<components:KPButton text="{DataController.instance.itemsDownloading.length}" currentState="indicator" x="138" y="198" visible="{DataController.instance.itemsDownloading.length>0}"/>
 </s:Group>

@@ -8,10 +8,9 @@
 				>
 	<fx:Script>
 		<![CDATA[
-			import classes.Download;
-			import classes.UIController;
 			import classes.AppItem;
 			import classes.AppItemType;
+			import classes.UIController;
 			
 			override public function set data(value:Object):void
 			{
@@ -29,13 +28,13 @@
 			<s:Spacer height="100%"/>
 			<components:KPButton text="从设备移除" currentState="selected"
 								 visible="{AppItem(data).isDeviceType()}" includeInLayout="{AppItem(data).isDeviceType()}"
-								 />
+								 click="UIController.instance.deleteAppFromDevice(data as AppItem)"/>
 			<components:KPButton text="同步"
 								 visible="{AppItem(data).isPcType()}" includeInLayout="{AppItem(data).isPcType()}"
 								 />
 			<s:HGroup visible="{AppItem(data).isStoreType()}" includeInLayout="{AppItem(data).isStoreType()}">
 				<components:KPButton text="详情" />
-				<components:KPButton text="购买" />
+				<components:KPButton text="购买" click="UIController.instance.addAppToDownload(data as AppItem)"/>
 			</s:HGroup>
 		</s:VGroup>
 	</s:HGroup>
