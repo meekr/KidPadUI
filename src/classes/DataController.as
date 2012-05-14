@@ -2,6 +2,7 @@ package classes
 {
 	import classes.Constants;
 	
+	import flash.external.*;
 	import flash.utils.setTimeout;
 	
 	import mx.collections.ArrayCollection;
@@ -76,13 +77,40 @@ package classes
 		public function getDeviceProductList():void
 		{
 			this.retrievingDeviceList = true;
-			flash.utils.setTimeout(function():void{DataController.instance.retrievingDeviceList = false;}, 5000);
+			var categoryNames:Array = ["aqxg", "jyrz1", "klxe", "qzgs", "slkx", "yeyy", "yyms", "zhwh", "zyyx"];
+			CONFIG::ON_PC {
+				for (var i:int=0; i<categoryNames.length; i++) {
+					var categoryXmlFile:String = "C:\\book\\storyList_" + categoryNames[i] + ".xml";
+					var xmlContent:String = ExternalInterface.call("F2C_getDeviceFileContent", categoryXmlFile);
+					var xml:XML = new XML(xmlContent.substr(xmlContent.indexOf("<")));
+					for (var j:int=0; j<xml.story.length(); i++) {
+						var app:AppItem = new AppItem();
+						app.name = xml.story[j].name.toString();
+						app.category = categoryNames[i];
+						app.iconFile = "C:\\book\\" + xml.story[j].icon.toString().replace('/', "\\");
+						app.iconBase64 = ExternalInterface.call("F2C_getDeviceIconBase64", app.iconFile);
+						
+						var entry:String = xml.story[j].entry.toString();
+						app.folderName = entry.substr(0, entry.indexOf("/"));
+						
+						itemsOnDevice.addItem(app);
+					}
+				}
+			}
+			this.retrievingDeviceList = false;
 		}
 		
 		public function getPcProductList():void
 		{
 			this.retrievingPcList = true;
-			flash.utils.setTimeout(function():void{DataController.instance.retrievingPcList = false;}, 5000);
+			CONFIG::ON_PC {
+				var namestr:String = ExternalInterface.call("F2C_getDownloadedAppNames", UIController.instance.downloadDirectory);
+				var names:Array = namestr.split(",");
+				for (var i:int=0; i<names.length; i++) {
+					UIController.instance.addPcItem(names[i]);
+				}
+			}
+			this.retrievingPcList = false;
 		}
 	}
 }

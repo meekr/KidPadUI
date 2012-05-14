@@ -10,6 +10,7 @@ package classes
 	{
 		public var id:String;
 		public var name:String;
+		public var folderName:String;
 		public var description:String;
 		public var category:String;
 		public var selected:Boolean;

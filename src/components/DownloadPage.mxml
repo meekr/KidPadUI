@@ -16,7 +16,7 @@
 			
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
-				UIController.instance.updateAppListOnPc();
+				DataController.instance.getPcProductList();
 				cate1Button.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
 			}
 			

@@ -91,7 +91,7 @@ package classes
 			
 			var buf:ByteArray = npkLoader.data;
 			var base64Enc:Base64Encoder = new Base64Encoder();
-			base64Enc.encodeBytes(npkLoader.data, 0, buf.length);
+			base64Enc.encodeBytes(buf, 0, buf.length);
 			var str:String = base64Enc.toString();
 			str = str.split("\n").join(""); 
 			trace(str.length+": "+str.substr(0, 1000));
@@ -107,8 +107,10 @@ package classes
 		{
 			var buf:ByteArray = pngLoader.data;
 			var base64Enc:Base64Encoder = new Base64Encoder();
-			base64Enc.encodeBytes(npkLoader.data, 0, buf.length);
+			base64Enc.encodeBytes(buf, 0, buf.length);
 			var str:String = base64Enc.toString();
+			
+			
 			str = str.split("\n").join("");
 			CONFIG::ON_PC {
 				ExternalInterface.call("F2C_saveFileFromBase64", UIController.instance.downloadDirectory+appName+".png,"+str);
