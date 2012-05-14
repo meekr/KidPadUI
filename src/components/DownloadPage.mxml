@@ -9,13 +9,14 @@
 		<![CDATA[
 			import classes.AppItem;
 			import classes.Constants;
-			import classes.UIController;
 			import classes.DataController;
+			import classes.UIController;
 			
 			import mx.events.FlexEvent;
 			
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
+				UIController.instance.updateAppListOnPc();
 				cate1Button.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
 			}
 			
@@ -43,18 +44,18 @@
 			
 			private function selectAll():void
 			{
-				for (var i:int=0; i<UIController.instance.itemsOnPc.length; i++)
+				for (var i:int=0; i<DataController.instance.itemsOnPc.length; i++)
 				{
-					var item:AppItem = UIController.instance.itemsOnPc.getItemAt(i) as AppItem;
+					var item:AppItem = DataController.instance.itemsOnPc.getItemAt(i) as AppItem;
 					item.selected = true;
 				}
 			}
 			
 			private function unselectAll():void
 			{
-				for (var i:int=0; i<UIController.instance.itemsOnPc.length; i++)
+				for (var i:int=0; i<DataController.instance.itemsOnPc.length; i++)
 				{
-					var item:AppItem = UIController.instance.itemsOnPc.getItemAt(i) as AppItem;
+					var item:AppItem = DataController.instance.itemsOnPc.getItemAt(i) as AppItem;
 					item.selected = false;
 				}
 			}
@@ -106,7 +107,7 @@
 					skinClass="skins.MyListSkin"
 					itemRenderer="renderers.ThumbnailItemRenderer"
 					visible="false"
-					dataProvider="{UIController.instance.itemsOnPc}">
+					dataProvider="{DataController.instance.itemsOnPc}">
 				<s:layout>
 					<s:TileLayout requestedColumnCount="2" paddingTop="20" paddingBottom="20" verticalGap="20" horizontalGap="20"
 								  />

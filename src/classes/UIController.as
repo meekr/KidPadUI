@@ -14,14 +14,13 @@ package classes
 	{
 		private static var mInstance:UIController;
 		
-		public var localPcPath:String = "D:\\KidPadDirectory";
+		public var downloadDirectory:String = "C:\\KidPadDirectory\\";
 		
 		private var mDriveProgramName:String;
 		private var mCategoryXmlPaths:Dictionary = new Dictionary();
 		
 		[Bindable]
 		public var user:User;
-		
 		[Bindable]
 		public var deviceDisk:DeviceDisk;
 		
@@ -29,11 +28,6 @@ package classes
 		public var appsOnDevice:ArrayCollection;
 		[Bindable]
 		public var appsOnPc:ArrayCollection;
-		
-		[Bindable]
-		public var itemsOnDevice:ArrayCollection;
-		[Bindable]
-		public var itemsOnPc:ArrayCollection;
 		
 		public function UIController()
 		{
@@ -46,16 +40,13 @@ package classes
 			user = new User();
 			deviceDisk = new DeviceDisk();
 			
-			itemsOnDevice = new ArrayCollection();
-			itemsOnPc = new ArrayCollection();
-			
 			for (var i:int=0; i<20; i++) {
 				var app:AppItem = new AppItem();
 				app.name = "三只小猪-"+(i+1);
 				app.description = "撒旦法为二位为切尔去玩儿阿斯顿法师打发玩儿去玩儿";
 				app.type = AppItemType.PC;
 				app.iconUrl = "http://t3.gstatic.com/images?q=tbn:ANd9GcRZDfYRwCBKmbeC-_ONcbndgTrNnasQiXcjmyt6I9vOG_PJDdctBw8vBLA";
-				itemsOnPc.addItem(app);
+				//itemsOnPc.addItem(app);
 			}
 			
 			for (i=40; i<70; i++) {
@@ -64,17 +55,22 @@ package classes
 				app.description = "撒旦法为二位为切尔dffs sdsds\nsdsssssseee eee\n去玩儿阿斯顿法师打发玩儿去玩儿";
 				app.type = AppItemType.DEVICE;
 				app.iconUrl = "http://t3.gstatic.com/images?q=tbn:ANd9GcRZDfYRwCBKmbeC-_ONcbndgTrNnasQiXcjmyt6I9vOG_PJDdctBw8vBLA";
-				itemsOnDevice.addItem(app);
+				//itemsOnDevice.addItem(app);
 			}
 		}
 		
 		public static function get instance():UIController
 		{
 			if (mInstance == null)
-			{
 				mInstance = new UIController();
-			}
 			return mInstance;
+		}
+		
+		public function externalAddCallback(functionName:String, callback:Function):void
+		{
+			CONFIG::ON_PC {
+				ExternalInterface.addCallback(functionName, callback);
+			}
 		}
 		
 		// methods invoke UI
@@ -94,18 +90,28 @@ package classes
 			UIController.instance.deviceDisk.total = total;
 		}
 		
+		public function addPcItem(appName:String):void
+		{
+			for each(var item:AppItem in DataController.instance.itemsOnPc) {
+				if (item.name == appName)
+					return;
+			}
+			
+			var app:AppItem = new AppItem();
+			app.name = appName;
+			app.type = AppItemType.PC;
+			app.iconUrl = this.downloadDirectory + appName + ".png";
+			DataController.instance.itemsOnPc.addItem(app);
+		}
+		
 		public function updateAppListOnPc():void
 		{
 			appsOnPc = new ArrayCollection();
 			CONFIG::ON_PC {
-				var pngstr:String = ExternalInterface.call("F2C_getLocalFileNames", UIController.instance.localPcPath);
-				var pngs:Array = pngstr.split(",");
-				for (var i:int=0; i<pngs.length; i++) {
-					var app:AppItem = new AppItem();
-					app.name = pngs[i];
-					app.iconFile = UIController.instance.localPcPath + "\\" + pngs[i] + ".png";
-					app.iconBase64 = ExternalInterface.call("F2C_getLocalIconBase64", app.iconFile);
-					appsOnPc.addItem(app);
+				var namestr:String = ExternalInterface.call("F2C_getDownloadedAppNames", this.downloadDirectory);
+				var names:Array = namestr.split(",");
+				for (var i:int=0; i<names.length; i++) {
+					addPcItem(names[i]);
 				}
 			}
 		}
@@ -150,7 +156,7 @@ package classes
 		public function installApp(app:AppItem):void
 		{
 			CONFIG::ON_PC {
-				var arg:String = UIController.instance.localPcPath + "\\" + app.name + ".npk";
+				var arg:String = this.downloadDirectory + app.name + ".npk";
 				var ret:String = ExternalInterface.call("F2C_installApp", arg);
 				if (ret == "1") {
 					// TODO: update category, iconFile, etc.
@@ -166,12 +172,15 @@ package classes
 					return false;
 			}
 			
-			var urls:Array = ["http://livedocs.adobe.com/flash/9.0/main/samples/Flash_Lite_1x.zip",
-				"http://download.macromedia.com/pub/developer/flash/Flash_Lite_4.zip"];
+			//var urls:Array = ["http://livedocs.adobe.com/flash/9.0/main/samples/Flash_Lite_1x.zip",
+			//	"http://download.macromedia.com/pub/developer/flash/Flash_Lite_4.zip"];
+			var urls:Array = ["004_motionTweenBMP", "007_shapeTween", "dragDrop", "FileBrowser", "stamper", "tellMeYourWishes", "wouldTheyLoveALion"];
+			var url:String = urls[int(Math.random()*urls.length)];
 			var item:Download = new Download();
 			item.appName = app.name;
-			item.url = urls[int(Math.random()*urls.length)];
-			trace(item.url);
+			item.npkUrl = "http://192.168.1.103/kidpad/npk/" + url + ".npk";
+			item.iconUrl = "http://192.168.1.103/kidpad/npk/" + url + ".png";
+			trace(item.npkUrl);
 			DataController.instance.itemsDownloading.addItem(item);
 			item.startDownload();
 			return true;

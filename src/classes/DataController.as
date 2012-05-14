@@ -2,6 +2,8 @@ package classes
 {
 	import classes.Constants;
 	
+	import flash.utils.setTimeout;
+	
 	import mx.collections.ArrayCollection;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.http.HTTPService;
@@ -21,6 +23,10 @@ package classes
 		
 		[Bindable]
 		public var retrievingStoreList:Boolean;
+		[Bindable]
+		public var retrievingDeviceList:Boolean;
+		[Bindable]
+		public var retrievingPcList:Boolean;
 		
 		public function DataController()
 		{
@@ -69,7 +75,14 @@ package classes
 		
 		public function getDeviceProductList():void
 		{
-			
+			this.retrievingDeviceList = true;
+			flash.utils.setTimeout(function():void{DataController.instance.retrievingDeviceList = false;}, 5000);
+		}
+		
+		public function getPcProductList():void
+		{
+			this.retrievingPcList = true;
+			flash.utils.setTimeout(function():void{DataController.instance.retrievingPcList = false;}, 5000);
 		}
 	}
 }

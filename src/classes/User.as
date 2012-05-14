@@ -2,18 +2,12 @@ package classes
 {
 	import classes.Constants;
 	
-	import events.*;
-	
-	import flash.events.EventDispatcher;
-	
 	import mx.controls.Alert;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.http.HTTPService;
 
 	[Bindable]
-	[Event(name="userLoggedIn", type="events.UserLoggedInEvent")]
-	[Event(name="userFailedLogin", type="events.UserFailedLoginEvent")]
-	public class User extends EventDispatcher
+	public class User
 	{
 		public var username:String = "NONE";
 		public var password:String;
@@ -44,14 +38,9 @@ package classes
 			if (obj.state == "valid") {
 				this.loggedIn = true;
 				this.token = obj.token;
-				var ev:UserLoggedInEvent = new UserLoggedInEvent();
-				this.dispatchEvent(new UserLoggedInEvent());
 			}
 			else {
 				this.loggedIn = false;
-				var ev2:UserFailedLoginEvent = new UserFailedLoginEvent();
-				ev2.error = "invalid username or password";
-				this.dispatchEvent(ev2);
 			}
 		}
 	}

@@ -3,10 +3,19 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
 		 xmlns:components="components.*"
-		 xmlns:classes="classes.*">
+		 xmlns:classes="classes.*"
+		 initialize="group1_initializeHandler(event)">
 	<fx:Script>
 		<![CDATA[
+			import classes.DataController;
 			import classes.UIController;
+			
+			import mx.events.FlexEvent;
+			
+			protected function group1_initializeHandler(event:FlexEvent):void
+			{
+				DataController.instance.getDeviceProductList();
+			}
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -62,10 +71,13 @@
 			<s:Label text="从设备删除"/>
 		</s:HGroup>
 		<s:Group width="100%" height="100%">
+			<s:Label y="20" text="正在努力从设备读取数据..." fontSize="14" horizontalCenter="0"
+					 visible="{DataController.instance.retrievingDeviceList}" includeInLayout="{DataController.instance.retrievingDeviceList}"/>
 			<s:List left="20" right="0" top="5" bottom="0"
 					skinClass="skins.MyListSkin"
 					itemRenderer="renderers.ThumbnailItemRenderer"
-					dataProvider="{UIController.instance.itemsOnDevice}">
+					dataProvider="{DataController.instance.itemsOnDevice}"
+					visible="{!DataController.instance.retrievingDeviceList}">
 				<s:layout>
 					<s:TileLayout requestedColumnCount="2" paddingTop="20" paddingBottom="20" verticalGap="20" horizontalGap="20"
 								  />
