@@ -1,5 +1,6 @@
 package classes
 {
+	import flash.events.Event;
 	import flash.events.EventDispatcher;
 	
 	import flashx.textLayout.formats.Float;
@@ -11,7 +12,7 @@ package classes
 	{
 		public var used:int = 15;
 		public var total:int = 60;
-		public var connected:Boolean = false;
+		private var _connected:Boolean = false;
 		
 		public function DeviceDisk()
 		{
@@ -32,6 +33,17 @@ package classes
 			return used * totalWidth / total;
 		}
 		
+		public function get connected():Boolean{ return _connected; }
+		public function set connected(value:Boolean):void
+		{
+			if (_connected != value)
+			{
+				_connected = value;
+				dispatchEvent(new Event("connectStatusChanged"));
+			}
+		}
+		
+		[Bindable("connectStatusChanged")]
 		public function get connectStatus():String
 		{
 			if (connected)

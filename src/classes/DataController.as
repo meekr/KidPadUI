@@ -2,14 +2,16 @@ package classes
 {
 	import classes.Constants;
 	
+	import flash.events.EventDispatcher;
 	import flash.external.*;
 	import flash.utils.setTimeout;
 	
 	import mx.collections.ArrayCollection;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.http.HTTPService;
+	import mx.controls.Alert;
 
-	public class DataController
+	public class DataController extends EventDispatcher
 	{
 		private static var mInstance:DataController;
 		
@@ -81,14 +83,18 @@ package classes
 			CONFIG::ON_PC {
 				for (var i:int=0; i<categoryNames.length; i++) {
 					var categoryXmlFile:String = "C:\\book\\storyList_" + categoryNames[i] + ".xml";
+					ExternalInterface.call("F2C_TRACE", "Xml File::" + categoryXmlFile);
 					var xmlContent:String = ExternalInterface.call("F2C_getDeviceFileContent", categoryXmlFile);
-					var xml:XML = new XML(xmlContent.substr(xmlContent.indexOf("<")));
-					for (var j:int=0; j<xml.story.length(); i++) {
+					xmlContent = xmlContent.substr(xmlContent.indexOf("?>")+2);
+					var xml:XML = new XML(xmlContent);
+					for (var j:int=0; j<xml.story.length(); j++) {
 						var app:AppItem = new AppItem();
 						app.name = xml.story[j].name.toString();
 						app.category = categoryNames[i];
-						app.iconFile = "C:\\book\\" + xml.story[j].icon.toString().replace('/', "\\");
+						app.type = AppItemType.DEVICE;
+						app.iconFile = "C:\\book\\" + xml.story[j].icon.toString().split('/').join('\\');
 						app.iconBase64 = ExternalInterface.call("F2C_getDeviceIconBase64", app.iconFile);
+						ExternalInterface.call("F2C_TRACE", app.iconFile);
 						
 						var entry:String = xml.story[j].entry.toString();
 						app.folderName = entry.substr(0, entry.indexOf("/"));

@@ -4,17 +4,21 @@
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="100%" height="100%"
 		 xmlns:components="components.*"
 		 xmlns:classes="classes.*"
-		 initialize="group1_initializeHandler(event)">
+		 creationComplete="group1_creationCompleteHandler(event)"
+		 >
 	<fx:Script>
 		<![CDATA[
 			import classes.DataController;
 			import classes.UIController;
 			
+			import flash.utils.setTimeout;
+			
 			import mx.events.FlexEvent;
 			
-			protected function group1_initializeHandler(event:FlexEvent):void
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
-				DataController.instance.getDeviceProductList();
+				DataController.instance.retrievingDeviceList = true;
+				flash.utils.setTimeout(DataController.instance.getDeviceProductList, 30);
 			}
 		]]>
 	</fx:Script>

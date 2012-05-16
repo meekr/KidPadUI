@@ -1,5 +1,6 @@
 package classes
 {
+	import flash.events.EventDispatcher;
 	import flash.external.*;
 	import flash.utils.Dictionary;
 	
@@ -10,7 +11,7 @@ package classes
 	import spark.components.List;
 	
 	
-	public class UIController
+	public class UIController extends EventDispatcher
 	{
 		private static var mInstance:UIController;
 		
@@ -28,20 +29,12 @@ package classes
 			// setup communicate pipe
 			CONFIG::ON_PC {
 				ExternalInterface.addCallback("FL_findNRDGameStoryAndAppRoot", FL_findNRDGameStoryAndAppRoot);
+				ExternalInterface.addCallback("FL_setDeviceConnection", FL_setDeviceConnection);
 				ExternalInterface.addCallback("FL_setDiskVolumnStatus", FL_setDiskVolumnStatus);
 			}
 			
 			user = new User();
 			deviceDisk = new DeviceDisk();
-			
-			for (var i:int=40; i<70; i++) {
-				var app:AppItem = new AppItem();
-				app.name = "我的应用-"+(i+1);
-				app.description = "撒旦法为二位为切尔dffs sdsds\nsdsssssseee eee\n去玩儿阿斯顿法师打发玩儿去玩儿";
-				app.type = AppItemType.DEVICE;
-				app.iconUrl = "http://t3.gstatic.com/images?q=tbn:ANd9GcRZDfYRwCBKmbeC-_ONcbndgTrNnasQiXcjmyt6I9vOG_PJDdctBw8vBLA";
-				//itemsOnDevice.addItem(app);
-			}
 		}
 		
 		public static function get instance():UIController
@@ -72,6 +65,11 @@ package classes
 			UIController.instance.deviceDisk.total = total;
 		}
 		
+		private function FL_setDeviceConnection(args:String):void
+		{
+			this.deviceDisk.connected = (args == "1");
+		}
+		
 		public function addPcItem(appName:String):void
 		{
 			for each(var item:AppItem in DataController.instance.itemsOnPc) {
@@ -84,19 +82,6 @@ package classes
 			app.type = AppItemType.PC;
 			app.iconUrl = this.downloadDirectory + appName + ".png";
 			DataController.instance.itemsOnPc.addItem(app);
-		}
-		
-		public function removeAppOnDevice(app:AppItem):void
-		{
-			CONFIG::ON_PC {
-				// appDirectoryPaths: appName,appDirectoryPath,appCategoryXmlFilePath
-				var xmlFile:String = "C:\\book\\storyList_" + app.category + ".xml";
-				var path:String = "C:\\book\\" + app.folderName;
-				var arg:String = app.name+","+path+","+xmlFile;
-				var ret:String = ExternalInterface.call("F2C_deleteAppOnDevice", arg);
-				if (ret == "1")
-					DataController.instance.itemsOnDevice.removeItemAt(DataController.instance.itemsOnDevice.getItemIndex(app));
-			}
 		}
 		
 		public function removeAppOnPc(app:AppItem):void
@@ -129,8 +114,8 @@ package classes
 			var url:String = urls[int(Math.random()*urls.length)];
 			var item:Download = new Download();
 			item.appName = app.name;
-			item.npkUrl = "http://192.168.1.4/kidpad/npk/" + url + ".npk";
-			item.iconUrl = "http://192.168.1.4/kidpad/npk/" + url + ".png";
+			item.npkUrl = "http://192.168.1.103/kidpad/npk/" + url + ".npk";
+			item.iconUrl = "http://192.168.1.103/kidpad/npk/" + url + ".png";
 			trace(item.npkUrl);
 			DataController.instance.itemsDownloading.addItem(item);
 			item.startDownload();
@@ -139,6 +124,17 @@ package classes
 		
 		public function deleteAppFromDevice(app:AppItem):Boolean
 		{
+			// appDirectoryPaths: appName,appDirectoryPath,appCategoryXmlFilePath
+			CONFIG::ON_PC {
+				// appDirectoryPaths: appName,appDirectoryPath,appCategoryXmlFilePath
+				var xmlFile:String = mDriveProgramName+"\\book\\storyList_"+app.category+".xml";
+				var path:String = mDriveProgramName+"\\book\\"+app.folderName;
+				var arg:String = app.name+","+path+","+xmlFile;
+				ExternalInterface.call("F2C_TRACE", arg);
+				var ret:String = ExternalInterface.call("F2C_deleteAppOnDevice", arg);
+				if (ret == "1")
+					DataController.instance.itemsOnDevice.removeItemAt(DataController.instance.itemsOnDevice.getItemIndex(app));
+			}
 			return true;
 		}
 		
@@ -148,6 +144,17 @@ package classes
 			if (index > -1)
 			{
 				item.cancelDownload();
+				DataController.instance.itemsDownloading.removeItemAt(index);
+				return true;
+			}
+			return false;
+		}
+		
+		public function completeDownload(item:Download):Boolean
+		{
+			var index:int = DataController.instance.itemsDownloading.getItemIndex(item);
+			if (index > -1)
+			{
 				DataController.instance.itemsDownloading.removeItemAt(index);
 				return true;
 			}

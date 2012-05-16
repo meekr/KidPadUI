@@ -65,6 +65,7 @@ package classes
 		public function cancelDownload():void
 		{
 			npkLoader.close();
+			pngLoader.close();
 			status = DownloadStatus.CANCELLED;
 			
 			CONFIG::ON_PC {
@@ -99,7 +100,7 @@ package classes
 				ExternalInterface.call("F2C_saveFileFromBase64", UIController.instance.downloadDirectory+appName+".npk,"+str);
 			}
 			
-			UIController.instance.deleteDownload(this);
+			UIController.instance.completeDownload(this);
 			UIController.instance.addPcItem(appName);
 		}
 		
@@ -110,13 +111,10 @@ package classes
 			base64Enc.encodeBytes(buf, 0, buf.length);
 			var str:String = base64Enc.toString();
 			
-			
 			str = str.split("\n").join("");
 			CONFIG::ON_PC {
 				ExternalInterface.call("F2C_saveFileFromBase64", UIController.instance.downloadDirectory+appName+".png,"+str);
 			}
-			
-			UIController.instance.deleteDownload(this);
 		}
 	}
 }

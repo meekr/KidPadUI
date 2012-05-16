@@ -12,6 +12,9 @@
 			import classes.AppItemType;
 			import classes.UIController;
 			
+			import mx.controls.*;
+			import mx.events.CloseEvent;
+			
 			override public function set data(value:Object):void
 			{
 				super.data = value;
@@ -25,6 +28,28 @@
 					}
 				}
 			}
+			
+			private function alertEventHandler(event:CloseEvent):void {
+				if(event.detail == Alert.YES) {
+					setTimeout(deferDeleteAction, 100);
+				}
+			}
+			
+			private function deferDeleteAction():void {
+				btnDeleteFromDevice.enabled = false;
+				btnDeleteFromDevice.text = "正在删除中...";
+				setTimeout(deferDeleteAction2, 1);
+			}
+			
+			private function deferDeleteAction2():void {
+				UIController.instance.deleteAppFromDevice(data as AppItem);
+			}
+			
+			protected function btnDeleteFromDevice_clickHandler(event:MouseEvent):void
+			{
+				var confirmDlg:Object = Alert.show("您确认删除\"" + AppItem(data).name + "\"吗？", "确认", Alert.YES|Alert.NO, null, alertEventHandler, null, Alert.YES); 
+			}
+			
 		]]>
 	</fx:Script>
 	<s:HGroup gap="6" width="355" height="100%">
@@ -35,9 +60,9 @@
 			<s:Label text="{data.name}" fontSize="15"/>
 			<mx:Text htmlText="{data.description}" width="100%"/>
 			<s:Spacer height="100%"/>
-			<components:KPButton text="从设备移除" currentState="selected"
+			<components:KPButton id="btnDeleteFromDevice" text="从设备移除" currentState="selected"
 								 visible="{AppItem(data).isDeviceType()}" includeInLayout="{AppItem(data).isDeviceType()}"
-								 click="UIController.instance.deleteAppFromDevice(data as AppItem)"/>
+								 click="btnDeleteFromDevice_clickHandler(event)"/>
 			<components:KPButton text="同步"
 								 visible="{AppItem(data).isPcType()}" includeInLayout="{AppItem(data).isPcType()}"
 								 />

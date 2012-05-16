@@ -26,6 +26,10 @@ mx|Text {
 	fontFamily:myFontFamily2;
 }
 
+mx|Alert {
+	fontFamily:myFontFamily2;
+}
+
 s|TextInput {
 	borderVisible:false;
 	fontSize:12;
