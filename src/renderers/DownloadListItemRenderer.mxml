@@ -48,7 +48,7 @@
 		</s:Group>
 		<s:Spacer width="10"/>
 		<components:KPButton text="删除" currentState="selected" click="UIController.instance.deleteDownload(data as Download)"/>
-		<components:KPButton text="暂停" radius="6" click="UIController.instance.pauseDownload(data as Download)"/>
-		<components:KPButton text="继续" radius="6" click="UIController.instance.resumeDownload(data as Download)"/>
+		<!--<components:KPButton text="暂停" radius="6" click="UIController.instance.pauseDownload(data as Download)"/>
+		<components:KPButton text="继续" radius="6" click="UIController.instance.resumeDownload(data as Download)"/>-->
 	</s:HGroup>
 </s:ItemRenderer>

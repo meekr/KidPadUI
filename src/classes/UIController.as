@@ -2,7 +2,7 @@ package classes
 {
 	import flash.events.EventDispatcher;
 	import flash.external.*;
-	import flash.utils.Dictionary;
+	import flash.utils.*;
 	
 	import mx.collections.ArrayCollection;
 	import mx.controls.Alert;
@@ -15,7 +15,7 @@ package classes
 	{
 		private static var mInstance:UIController;
 		
-		public var downloadDirectory:String = "C:\\KidPadDirectory\\";
+		public var downloadDirectory:String;
 		
 		private var mDriveProgramName:String;
 		
@@ -28,6 +28,7 @@ package classes
 		{
 			// setup communicate pipe
 			CONFIG::ON_PC {
+				ExternalInterface.addCallback("FL_setDownloadDirectory", FL_setDownloadDirectory);
 				ExternalInterface.addCallback("FL_findNRDGameStoryAndAppRoot", FL_findNRDGameStoryAndAppRoot);
 				ExternalInterface.addCallback("FL_setDeviceConnection", FL_setDeviceConnection);
 				ExternalInterface.addCallback("FL_setDiskVolumnStatus", FL_setDiskVolumnStatus);
@@ -52,6 +53,11 @@ package classes
 		}
 		
 		// methods invoke UI
+		private function FL_setDownloadDirectory(args:String):void
+		{
+			downloadDirectory = args;
+		}
+		
 		private function FL_findNRDGameStoryAndAppRoot(args:String):void
 		{
 			mDriveProgramName = args;
@@ -81,6 +87,7 @@ package classes
 			app.name = appName;
 			app.type = AppItemType.PC;
 			app.iconUrl = this.downloadDirectory + appName + ".png";
+			ExternalInterface.call("F2C_TRACE", app.iconUrl);
 			DataController.instance.itemsOnPc.addItem(app);
 		}
 		
@@ -112,13 +119,14 @@ package classes
 			//	"http://download.macromedia.com/pub/developer/flash/Flash_Lite_4.zip"];
 			var urls:Array = ["004_motionTweenBMP", "007_shapeTween", "dragDrop", "FileBrowser", "stamper", "tellMeYourWishes", "wouldTheyLoveALion"];
 			var url:String = urls[int(Math.random()*urls.length)];
+			url = "wouldTheyLoveALion";
 			var item:Download = new Download();
 			item.appName = app.name;
 			item.npkUrl = "http://192.168.1.103/kidpad/npk/" + url + ".npk";
 			item.iconUrl = "http://192.168.1.103/kidpad/npk/" + url + ".png";
 			trace(item.npkUrl);
 			DataController.instance.itemsDownloading.addItem(item);
-			item.startDownload();
+			setTimeout(item.startDownload, 100);
 			return true;
 		}
 		

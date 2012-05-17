@@ -111,9 +111,11 @@ package classes
 			this.retrievingPcList = true;
 			CONFIG::ON_PC {
 				var namestr:String = ExternalInterface.call("F2C_getDownloadedAppNames", UIController.instance.downloadDirectory);
-				var names:Array = namestr.split(",");
-				for (var i:int=0; i<names.length; i++) {
-					UIController.instance.addPcItem(names[i]);
+				if (namestr.length > 0) {
+					var names:Array = namestr.split(",");
+					for (var i:int=0; i<names.length; i++) {
+						UIController.instance.addPcItem(names[i]);
+					}
 				}
 			}
 			this.retrievingPcList = false;
