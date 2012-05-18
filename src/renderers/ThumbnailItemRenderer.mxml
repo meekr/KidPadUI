@@ -10,6 +10,7 @@
 		<![CDATA[
 			import classes.AppItem;
 			import classes.AppItemType;
+			import classes.Constants;
 			import classes.UIController;
 			
 			import mx.controls.*;
@@ -50,6 +51,10 @@
 				var confirmDlg:Object = Alert.show("您确认删除\"" + AppItem(data).name + "\"吗？", "确认", Alert.YES|Alert.NO, null, alertEventHandler, null, Alert.YES); 
 			}
 			
+			private function btnDetail_clickHandler(event:MouseEvent):void
+			{
+				navigateToURL(new URLRequest(Constants.DOMAIN + "product/view/6"));
+			}
 		]]>
 	</fx:Script>
 	<s:HGroup gap="6" width="355" height="100%">
@@ -68,7 +73,7 @@
 								 visible="{AppItem(data).isPcType()}" includeInLayout="{AppItem(data).isPcType()}"
 								 />
 			<s:HGroup visible="{AppItem(data).isStoreType()}" includeInLayout="{AppItem(data).isStoreType()}">
-				<components:KPButton text="详情" />
+				<components:KPButton id="btnDetail" text="详情" click="btnDetail_clickHandler(event)"/>
 				<components:KPButton text="购买" click="UIController.instance.addAppToDownload(data as AppItem)"/>
 			</s:HGroup>
 		</s:VGroup>

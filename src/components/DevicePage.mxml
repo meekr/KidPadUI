@@ -11,6 +11,8 @@
 			import classes.DataController;
 			import classes.UIController;
 			
+			import events.DeviceConnectionChangeEvent;
+			
 			import flash.utils.setTimeout;
 			
 			import mx.events.FlexEvent;
@@ -19,6 +21,19 @@
 			{
 				DataController.instance.retrievingDeviceList = true;
 				flash.utils.setTimeout(DataController.instance.getDeviceProductList, 30);
+				
+				UIController.instance.addEventListener(DeviceConnectionChangeEvent.name, deviceConnectionChangeHandler);
+			}
+			
+			protected function deviceConnectionChangeHandler(event:DeviceConnectionChangeEvent):void
+			{
+				if (event.connected) {
+					DataController.instance.retrievingDeviceList = true;
+					flash.utils.setTimeout(DataController.instance.getDeviceProductList, 30);
+				}
+				else {
+					DataController.instance.itemsOnDevice.removeAll();
+				}
 			}
 		]]>
 	</fx:Script>

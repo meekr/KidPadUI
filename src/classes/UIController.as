@@ -10,7 +10,7 @@ package classes
 	
 	import spark.components.List;
 	
-	
+	[Event(name="deviceConnectionChange", type="events.DeviceConnectionChangeEvent")]
 	public class UIController extends EventDispatcher
 	{
 		private static var mInstance:UIController;
@@ -73,7 +73,7 @@ package classes
 		
 		private function FL_setDeviceConnection(args:String):void
 		{
-			this.deviceDisk.connected = (args == "1");
+			deviceDisk.connected = (args == "1");
 		}
 		
 		public function addPcItem(appName:String):void
@@ -115,14 +115,12 @@ package classes
 					return false;
 			}
 			
-			//var urls:Array = ["http://livedocs.adobe.com/flash/9.0/main/samples/Flash_Lite_1x.zip",
-			//	"http://download.macromedia.com/pub/developer/flash/Flash_Lite_4.zip"];
 			var urls:Array = ["004_motionTweenBMP", "007_shapeTween", "dragDrop", "FileBrowser", "stamper", "tellMeYourWishes", "wouldTheyLoveALion"];
 			var url:String = urls[int(Math.random()*urls.length)];
-			url = "wouldTheyLoveALion";
 			var item:Download = new Download();
 			item.appName = app.name;
 			item.npkUrl = "http://192.168.1.103/kidpad/npk/" + url + ".npk";
+			item.npkUrl = "http://livedocs.adobe.com/flash/9.0/main/samples/Flash_Lite_2x.zip";
 			item.iconUrl = "http://192.168.1.103/kidpad/npk/" + url + ".png";
 			trace(item.npkUrl);
 			DataController.instance.itemsDownloading.addItem(item);

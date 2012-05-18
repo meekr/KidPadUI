@@ -1,6 +1,9 @@
 package classes
 {
+	import events.DeviceConnectionChangeEvent;
+	
 	import flash.events.Event;
+	import flash.external.*;
 	import flash.events.EventDispatcher;
 	
 	import flashx.textLayout.formats.Float;
@@ -41,6 +44,10 @@ package classes
 			{
 				_connected = value;
 				dispatchEvent(new Event("connectStatusChanged"));
+				
+				var evt:DeviceConnectionChangeEvent = new DeviceConnectionChangeEvent();
+				evt.connected = _connected;
+				UIController.instance.dispatchEvent(evt);
 			}
 		}
 		
