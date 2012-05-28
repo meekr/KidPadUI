@@ -14,7 +14,7 @@ package classes
 	public class DeviceDisk extends EventDispatcher
 	{
 		private var _total:int = 60;
-		private var _used:int = 15;
+		private var _used:int = 0;
 		private var _connected:Boolean = false;
 		
 		public function DeviceDisk()
@@ -24,9 +24,13 @@ package classes
 		[Bindable("volumeStatusChanged")]
 		public function get volumeStatus():String
 		{
-			return "已用"+used+"M，还有"+(total-used)+"M可用空间";
+			if (_connected)
+				return "已用"+used+"M，还有"+(total-used)+"M可用空间";
+			else
+				return "您的设备未连接，可用空间未知";
 		}
 		
+		[Bindable("volumeStatusChanged")]
 		public function get usage():Number
 		{
 			return used*100/total;
@@ -44,6 +48,7 @@ package classes
 			{
 				_connected = value;
 				dispatchEvent(new Event("connectStatusChanged"));
+				dispatchEvent(new Event("volumeStatusChanged"));
 				
 				var evt:DeviceConnectionChangeEvent = new DeviceConnectionChangeEvent();
 				evt.connected = _connected;

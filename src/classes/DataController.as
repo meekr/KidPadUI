@@ -53,7 +53,7 @@ package classes
 			this.retrievingStoreList = true;
 		
 			var service:HTTPService = new HTTPService();
-			service.url = Constants.DOMAIN + "client/product/list";
+			service.url = Constants.PRODUCT_URL;
 			service.method = "POST";
 			service.resultFormat = "text";
 			service.addEventListener(ResultEvent.RESULT, storeResultListener);
@@ -67,10 +67,11 @@ package classes
 			itemsOnStore.removeAll();
 			for (var i:int=0; i<obj.products.length; i++) {
 				var item:AppItem = new AppItem();
+				item.id = obj.products[i].id;
 				item.name = obj.products[i].name;
 				item.description = obj.products[i].content;
 				item.type = AppItemType.STORE;
-				item.iconUrl = "http://t3.gstatic.com/images?q=tbn:ANd9GcRZDfYRwCBKmbeC-_ONcbndgTrNnasQiXcjmyt6I9vOG_PJDdctBw8vBLA";
+				item.iconUrl = Constants.getThumbUrl(obj.products[i].thumbs.s);
 				itemsOnStore.addItem(item);
 			}
 			this.retrievingStoreList = false;

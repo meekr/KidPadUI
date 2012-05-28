@@ -24,7 +24,7 @@ package classes
 			this.username = name;
 			this.password = password;
 			var loginService:HTTPService = new HTTPService();
-			loginService.url = Constants.DOMAIN + "client/user/login";
+			loginService.url = Constants.LOGIN_URL;
 			loginService.method = "POST";
 			loginService.resultFormat = "text";
 			loginService.addEventListener(ResultEvent.RESULT, resultListener);

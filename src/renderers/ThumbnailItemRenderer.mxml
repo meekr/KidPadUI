@@ -53,7 +53,7 @@
 			
 			private function btnDetail_clickHandler(event:MouseEvent):void
 			{
-				navigateToURL(new URLRequest(Constants.DOMAIN + "product/view/6"));
+				navigateToURL(new URLRequest(Constants.getProductDetailUrl(data.id)));
 			}
 		]]>
 	</fx:Script>
