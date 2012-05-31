@@ -119,9 +119,8 @@ package classes
 			var url:String = urls[int(Math.random()*urls.length)];
 			var item:Download = new Download();
 			item.appName = app.name;
-			item.npkUrl = "http://192.168.1.103/kidpad/npk/" + url + ".npk";
-			item.npkUrl = "http://livedocs.adobe.com/flash/9.0/main/samples/Flash_Lite_2x.zip";
-			item.iconUrl = "http://192.168.1.103/kidpad/npk/" + url + ".png";
+			item.npkUrl = app.npkUrl;
+			item.iconUrl = app.iconUrl;
 			trace(item.npkUrl);
 			DataController.instance.itemsDownloading.addItem(item);
 			setTimeout(item.startDownload, 100);

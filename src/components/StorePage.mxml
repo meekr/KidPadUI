@@ -9,32 +9,65 @@
 		<![CDATA[
 			import classes.AppItem;
 			import classes.Constants;
-			import classes.UIController;
 			import classes.DataController;
+			import classes.UIController;
 			
 			import mx.collections.ArrayCollection;
 			import mx.events.FlexEvent;
 			import mx.rpc.events.ResultEvent;
 			import mx.rpc.http.HTTPService;
 			
+			
+			private var catIds:Array = [0, 3, 7, 8, 11, 12, 13, 14, 15];
+			private var currentCid:int = 0;
+			private var currentPage:int = 1;
+			private var currentSort:String = "";
+			
 			protected function cateButton_clickHandler(event:MouseEvent):void
 			{
-				// update visual appearance
 				var button:KPButton = event.currentTarget as KPButton;
-				button.currentState = "selected";
-				for (var i:int=1; i<=3; i++) {
-					var id:String = "cate" + i + "Button";
-					if (id == button.id) continue;
-					var btn:KPButton = this[id];
-					btn.currentState = "notSelected";
+				if (button.currentState == "notSelected") {
+					for (var i:int=0; i<categories.numElements; i++) {
+						var btn:KPButton = categories.getElementAt(i) as KPButton;
+						if (btn == button) {
+							btn.currentState = "selected";
+							currentPage = 1;
+							currentCid = catIds[i];
+						}
+						else {
+							btn.currentState = "notSelected";
+						}
+					}
 				}
-				
-				DataController.instance.getStoreProductList();
+				DataController.instance.getStoreProductList(currentCid, currentPage, currentSort);
+			}
+			
+			private function previousPage():void
+			{
+				if (currentPage > 1) {
+					--currentPage;
+					DataController.instance.getStoreProductList(currentCid, currentPage, currentSort);
+				}
+			}
+			
+			private function nextPage():void
+			{
+				++currentPage;
+				DataController.instance.getStoreProductList(currentCid, currentPage, currentSort);
 			}
 			
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
-				cate1Button.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+				var cats:Array = ["全部", "教育认知", "亲子故事", "安全习惯", "中华文化", "数理科学", "音乐美术", "益智游戏", "幼儿英语"];
+				for (var i:int=0; i<cats.length; i++) {
+					var button:KPButton = new KPButton();
+					button.text = cats[i];
+					button.horizontalPadding = 7;
+					button.currentState = "notSelected";
+					button.addEventListener(MouseEvent.CLICK, cateButton_clickHandler);
+					categories.addElement(button);
+				}
+				categories.getElementAt(0).dispatchEvent(new MouseEvent(MouseEvent.CLICK));
 			}
 		]]>
 	</fx:Script>
@@ -54,11 +87,14 @@
 	</s:Rect>
 	<s:VGroup width="100%" height="100%" gap="0">
 		<s:HGroup width="100%" height="40" verticalAlign="middle" paddingLeft="10" paddingRight="10">
-			<components:KPButton id="cate1Button" text="图书" click="cateButton_clickHandler(event)" currentState="notSelected"/>
+			<s:HGroup id="categories" gap="0">
+				
+			</s:HGroup>
+			<!--<components:KPButton id="cate1Button" text="图书" click="cateButton_clickHandler(event)" currentState="notSelected"/>
 			<components:KPButton id="cate2Button" text="应用" click="cateButton_clickHandler(event)" currentState="notSelected"/>
-			<components:KPButton id="cate3Button" text="游戏" click="cateButton_clickHandler(event)" currentState="notSelected"/>
+			<components:KPButton id="cate3Button" text="游戏" click="cateButton_clickHandler(event)" currentState="notSelected"/>-->
 			<s:Spacer width="100%"/>
-			<s:Group width="232" height="25">
+			<s:Group width="200" height="25">
 				<s:Image source="@Embed(source='assets/search-bg.jpg')" width="100%" height="100%"/>
 				<components:KPTextInput id="searchBox"
 										text="输入关键字查找"
@@ -71,13 +107,13 @@
 		</s:HGroup>
 		<mx:HRule width="100%" height="1"/>
 		<s:HGroup width="100%" height="20" verticalAlign="middle" paddingLeft="10" paddingRight="10" gap="5">
-			<s:Image source="@Embed(source='assets/arrow-left.png')" width="7" height="100%" fillMode="clip" click="trace('previous page')"/>
+			<s:Image source="@Embed(source='assets/arrow-left.png')" width="7" height="100%" fillMode="clip" click="previousPage()"/>
 			<s:Spacer width="5"/>
-			<s:Image source="@Embed(source='assets/arrow-right.png')" width="7" height="100%" fillMode="clip" click="trace('next page')"/>
+			<s:Image source="@Embed(source='assets/arrow-right.png')" width="7" height="100%" fillMode="clip" click="nextPage()"/>
 			<s:Spacer width="100%"/>
-			<s:Label text="最新"/>
-			<s:Label text="最热"/>
-			<s:Label text="限时免费"/>
+			<s:Label text="更新数"/>
+			<s:Label text="下载数"/>
+			<s:Label text="评论数"/>
 		</s:HGroup>
 		<s:Group width="100%" height="100%">
 			<s:Label y="20" text="正在努力从网络获取数据..." fontSize="14" horizontalCenter="0"

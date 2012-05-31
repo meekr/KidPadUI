@@ -59,6 +59,14 @@
 					item.selected = false;
 				}
 			}
+			
+			private function import2Library():void
+			{
+				CONFIG::ON_PC {
+					ExternalInterface.call("F2C_import2Library", "");
+					cate1Button.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+				}
+			}
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -79,7 +87,8 @@
 			<components:KPButton id="cate1Button" text="已下载" click="cateButton_clickHandler(event)" currentState="notSelected"/>
 			<components:KPButton id="cate2Button" text="下载中" click="cateButton_clickHandler(event)" currentState="notSelected"/>
 			<s:Spacer width="100%"/>
-			<s:Group width="232" height="25">
+			<components:KPButton text="导入应用" click="import2Library()"/>
+			<s:Group width="200" height="25">
 				<s:Image source="@Embed(source='assets/search-bg.jpg')" width="100%" height="100%"/>
 				<!--<s:TextInput text="输入关键字查找" width="187" height="100%"/>-->
 				<components:KPTextInput id="searchBox"
@@ -93,10 +102,6 @@
 		</s:HGroup>
 		<mx:HRule width="100%" height="1"/>
 		<s:HGroup width="100%" height="20" verticalAlign="middle" paddingLeft="10" paddingRight="10" gap="5">
-			<s:Label text="全部"/>
-			<s:Label text="图书"/>
-			<s:Label text="应用"/>
-			<s:Label text="游戏"/>
 			<s:Spacer width="100%"/>
 			<s:Label text="全选" click="selectAll()"/>
 			<s:Label text="全不选" click="unselectAll()"/>

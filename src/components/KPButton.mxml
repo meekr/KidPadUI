@@ -12,6 +12,7 @@
 		<fx:String id="text"/>
 		<fx:Number id="fontSize">12</fx:Number>
 		<fx:Number id="radius">0</fx:Number>
+		<fx:Number id="horizontalPadding">12</fx:Number>
 		<fx:Number id="backgroundColor">#7cbc12</fx:Number>
 	</fx:Declarations>
 	<fx:Style>
@@ -34,7 +35,7 @@
 			 color="#FFFFFF" color.notSelected="#666666"
 			 fontSize="{fontSize}"
 			 fontSize.indicator="8"
-			 paddingLeft="12" paddingRight="12" paddingTop="6" paddingBottom="6"
+			 paddingLeft="{horizontalPadding}" paddingRight="{horizontalPadding}" paddingTop="6" paddingBottom="6"
 			 paddingLeft.indicator="4" paddingRight.indicator="4" paddingTop.indicator="2" paddingBottom.indicator="2"
 			 />
 </s:Group>

@@ -7,9 +7,9 @@ package classes
 	import flash.utils.setTimeout;
 	
 	import mx.collections.ArrayCollection;
+	import mx.controls.Alert;
 	import mx.rpc.events.ResultEvent;
 	import mx.rpc.http.HTTPService;
-	import mx.controls.Alert;
 
 	public class DataController extends EventDispatcher
 	{
@@ -48,12 +48,21 @@ package classes
 			return mInstance;
 		}
 		
-		public function getStoreProductList():void
+		public function getStoreProductList(categoryId:int, page:int, sort:String):void
 		{
 			this.retrievingStoreList = true;
 		
+			var params:Array = new Array();
+			if (categoryId)
+				params.push("cid="+categoryId);
+			if (sort)
+				params.push("tab="+sort);
+			if (page)
+				params.push("page="+page);
+			var url:String = Constants.PRODUCT_URL + "?" + params.join("&");
+			
 			var service:HTTPService = new HTTPService();
-			service.url = Constants.PRODUCT_URL;
+			service.url = url;
 			service.method = "POST";
 			service.resultFormat = "text";
 			service.addEventListener(ResultEvent.RESULT, storeResultListener);
@@ -69,8 +78,10 @@ package classes
 				var item:AppItem = new AppItem();
 				item.id = obj.products[i].id;
 				item.name = obj.products[i].name;
-				item.description = obj.products[i].content;
+				item.description = obj.products[i].plain + "\n\n适合年龄：" + obj.products[i].age;
 				item.type = AppItemType.STORE;
+				item.npkUrl = Constants.getNpkUrl(obj.products[i].download_link);
+				trace(item.npkUrl);
 				item.iconUrl = Constants.getThumbUrl(obj.products[i].thumbs.s);
 				itemsOnStore.addItem(item);
 			}

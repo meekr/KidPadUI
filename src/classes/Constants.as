@@ -1,5 +1,7 @@
 package classes
 {
+	import classes.UIController;
+	
 	public class Constants
 	{
 		private static var DOMAIN:String = "http://223.4.2.218/";
@@ -10,6 +12,11 @@ package classes
 		public static function getProductDetailUrl(id:int):String
 		{
 			return DOMAIN + "product/view/" + id;
+		}
+		
+		public static function getNpkUrl(npkPath:String):String
+		{
+			return DOMAIN + npkPath + "?token=" + UIController.instance.user.token;
 		}
 		
 		public static function getThumbUrl(thumbPath:String):String

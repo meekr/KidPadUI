@@ -37,7 +37,7 @@ package classes
 			var obj:Object = JSON.parse(json);
 			if (obj.state == "valid") {
 				this.loggedIn = true;
-				this.token = obj.token;
+				this.token = obj.data.token;
 			}
 			else {
 				this.loggedIn = false;
