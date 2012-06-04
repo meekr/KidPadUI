@@ -1,12 +1,13 @@
 package classes
 {
+	import flash.events.EventDispatcher;
 	import flash.utils.ByteArray;
 	
 	import mx.controls.Image;
 	import mx.utils.Base64Decoder;
 
 	[Bindable]
-	public class AppItem
+	public class AppItem extends EventDispatcher
 	{
 		public var id:String;
 		public var name:String;

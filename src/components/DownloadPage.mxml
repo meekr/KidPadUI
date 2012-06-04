@@ -11,6 +11,7 @@
 			import classes.Constants;
 			import classes.DataController;
 			import classes.UIController;
+			import events.AppItemSyncEvent;
 			
 			import mx.events.FlexEvent;
 			
@@ -62,7 +63,20 @@
 			
 			private function syncSelected():void
 			{
-			
+				var toBeDeleted:Array = new Array();
+				for (var i:int=0; i<DataController.instance.itemsOnPc.length; i++)
+				{
+					var item:AppItem = DataController.instance.itemsOnPc.getItemAt(i) as AppItem;
+					if (item.selected) {
+						toBeDeleted.push(item);
+					}
+				}
+				
+				while (toBeDeleted.length > 0) {
+					var ai:AppItem = toBeDeleted[0] as AppItem;
+					ai.dispatchEvent(new AppItemSyncEvent());
+					toBeDeleted.shift();
+				}
 			}
 			
 			private function import2Library():void

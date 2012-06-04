@@ -105,10 +105,10 @@ package classes
 			CONFIG::ON_PC {
 				for (var i:int=0; i<categoryNames.length; i++) {
 					var categoryXmlFile:String = UIController.instance.driveProgramName+"\\book\\storyList_"+categoryNames[i]+".xml";
-					ExternalInterface.call("F2C_TRACE", "Xml File::" + categoryXmlFile);
 					var xmlContent:String = ExternalInterface.call("F2C_getDeviceFileContent", categoryXmlFile);
 					xmlContent = xmlContent.substr(xmlContent.indexOf("?>")+2);
 					var xml:XML = new XML(xmlContent);
+					ExternalInterface.call("F2C_TRACE", "Xml File:" + categoryXmlFile + " - has " + xml.story.length() + " stories");
 					for (var j:int=0; j<xml.story.length(); j++) {
 						var app:AppItem = new AppItem();
 						app.name = xml.story[j].name.toString();

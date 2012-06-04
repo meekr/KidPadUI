@@ -13,6 +13,9 @@
 			import classes.Constants;
 			import classes.UIController;
 			
+			import events.AppItemDeleteEvent;
+			import events.AppItemSyncEvent;
+			
 			import mx.controls.*;
 			import mx.events.CloseEvent;
 			
@@ -21,6 +24,8 @@
 				super.data = value;
 				var item:AppItem = value as AppItem;
 				if (item) {
+					item.addEventListener(AppItemDeleteEvent.name, appItemDeleteHandler);
+					item.addEventListener(AppItemSyncEvent.name, appItemSyncHandler);
 					if (item.isDeviceType()) {
 						thumbnail.load(item.iconByteArray);
 					}
@@ -28,21 +33,32 @@
 						thumbnail.source = item.iconUrl;
 					}
 				}
+				else {
+					thumbnail.source = null;
+				}
+			}
+			
+			protected function appItemDeleteHandler(event:AppItemDeleteEvent):void
+			{
+				btnDeleteFromDevice.enabled = false;
+				btnDeleteFromDevice.text = "正在删除中...";
+				setTimeout(deferDeleteAction, 100);
+			}
+			
+			protected function appItemSyncHandler(event:AppItemSyncEvent):void
+			{
+				btnSync.enabled = false;
+				btnSync.text = "正在同步中...";
+				setTimeout(deferSyncAction, 100);
 			}
 			
 			private function alertEventHandler(event:CloseEvent):void {
 				if(event.detail == Alert.YES) {
-					setTimeout(deferDeleteAction, 100);
+					(data as AppItem).dispatchEvent(new AppItemDeleteEvent());
 				}
 			}
 			
 			private function deferDeleteAction():void {
-				btnDeleteFromDevice.enabled = false;
-				btnDeleteFromDevice.text = "正在删除中...";
-				setTimeout(deferDeleteAction2, 1);
-			}
-			
-			private function deferDeleteAction2():void {
 				UIController.instance.deleteAppFromDevice(data as AppItem);
 			}
 			
@@ -56,23 +72,25 @@
 				navigateToURL(new URLRequest(Constants.getProductDetailUrl(data.id)));
 			}
 			
-			
-			
-			
-			protected function btnSyncToDevice_clickHandler(event:MouseEvent):void
+			protected function btnSync_clickHandler(event:MouseEvent):void
 			{
-				btnSyncToDevice.enabled = false;
-				btnSyncToDevice.text = "正在同步中...";
-				setTimeout(deferSyncAction, 1);
+				(data as AppItem).dispatchEvent(new AppItemSyncEvent());
 			}
 			
 			private function deferSyncAction():void {
 				UIController.instance.installApp(data as AppItem);
 			}
+			
+			protected function checkbox_changeHandler(event:Event):void
+			{
+				data.selected = checkbox.selected;
+			}
+			
 		]]>
 	</fx:Script>
 	<s:HGroup gap="6" width="355" height="100%">
-		<s:CheckBox selected="{data.selected}" visible="{!AppItem(data).isStoreType()}"
+		<s:CheckBox id="checkbox" selected="{data.selected}" visible="{!AppItem(data).isStoreType()}"
+					change="checkbox_changeHandler(event)"
 					skinClass="skins.MyCheckBoxSkin"/>
 		<mx:Image id="thumbnail" width="120" height="120" source="@Embed(source='assets/icon-placeholder.png')"/>
 		<s:Spacer width="5"/>
@@ -83,9 +101,9 @@
 			<components:KPButton id="btnDeleteFromDevice" text="从设备移除" currentState="selected"
 								 visible="{AppItem(data).isDeviceType()}" includeInLayout="{AppItem(data).isDeviceType()}"
 								 click="btnDeleteFromDevice_clickHandler(event)"/>
-			<components:KPButton id="btnSyncToDevice" text="同步"
+			<components:KPButton id="btnSync" text="同步"
 								 visible="{AppItem(data).isPcType()}" includeInLayout="{AppItem(data).isPcType()}"
-								 click="btnSyncToDevice_clickHandler(event)"/>
+								 click="btnSync_clickHandler(event)"/>
 			<s:HGroup visible="{AppItem(data).isStoreType()}" includeInLayout="{AppItem(data).isStoreType()}">
 				<components:KPButton id="btnDetail" text="详情" click="btnDetail_clickHandler(event)"/>
 				<components:KPButton text="购买" click="UIController.instance.addAppToDownload(data as AppItem)"/>

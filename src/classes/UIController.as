@@ -152,7 +152,9 @@ package classes
 				ExternalInterface.call("F2C_TRACE", arg);
 				var ret:String = ExternalInterface.call("F2C_deleteAppOnDevice", arg);
 				if (ret == "1") {
-					DataController.instance.itemsOnDevice.removeItemAt(DataController.instance.itemsOnDevice.getItemIndex(app));
+					var idx:int = DataController.instance.itemsOnDevice.getItemIndex(app);
+					ExternalInterface.call("F2C_TRACE", "delete app at " + idx);
+					DataController.instance.itemsOnDevice.removeItemAt(idx);
 				}
 			}
 			return true;
