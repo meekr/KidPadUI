@@ -23,6 +23,11 @@
 			private var currentPage:int = 1;
 			private var currentSort:String = "";
 			
+			[Bindable]
+			private var currentSlug:String = "";
+			
+			public static var totalPageCount:int = 0;
+			
 			protected function cateButton_clickHandler(event:MouseEvent):void
 			{
 				var button:KPButton = event.currentTarget as KPButton;
@@ -38,22 +43,26 @@
 							btn.currentState = "notSelected";
 						}
 					}
+					
+					currentSlug = "";
+					DataController.instance.getStoreProductList(currentCid, currentPage, currentSort, currentSlug);
 				}
-				DataController.instance.getStoreProductList(currentCid, currentPage, currentSort);
 			}
 			
 			private function previousPage():void
 			{
 				if (currentPage > 1) {
 					--currentPage;
-					DataController.instance.getStoreProductList(currentCid, currentPage, currentSort);
+					DataController.instance.getStoreProductList(currentCid, currentPage, currentSort, currentSlug);
 				}
 			}
 			
 			private function nextPage():void
 			{
-				++currentPage;
-				DataController.instance.getStoreProductList(currentCid, currentPage, currentSort);
+				if (currentPage < totalPageCount) {
+					++currentPage;
+					DataController.instance.getStoreProductList(currentCid, currentPage, currentSort, currentSlug);
+				}
 			}
 			
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
@@ -68,6 +77,13 @@
 					categories.addElement(button);
 				}
 				categories.getElementAt(0).dispatchEvent(new MouseEvent(MouseEvent.CLICK));
+			}
+			
+			private function search():void
+			{
+				currentPage = 1;
+				currentSlug = searchBox.text;
+				DataController.instance.getStoreProductList(currentCid, currentPage, currentSort, currentSlug);
 			}
 		]]>
 	</fx:Script>
@@ -90,9 +106,6 @@
 			<s:HGroup id="categories" gap="0">
 				
 			</s:HGroup>
-			<!--<components:KPButton id="cate1Button" text="图书" click="cateButton_clickHandler(event)" currentState="notSelected"/>
-			<components:KPButton id="cate2Button" text="应用" click="cateButton_clickHandler(event)" currentState="notSelected"/>
-			<components:KPButton id="cate3Button" text="游戏" click="cateButton_clickHandler(event)" currentState="notSelected"/>-->
 			<s:Spacer width="100%"/>
 			<s:Group width="200" height="25">
 				<s:Image source="@Embed(source='assets/search-bg.jpg')" width="100%" height="100%"/>
@@ -102,7 +115,7 @@
 										width="187" height="100%"
 										backgroundAlpha="0"
 										borderWeight="0"/>
-				<s:Label x="187" width="45" height="100%" click="trace('search...')"/>
+				<s:Label x="155" width="45" height="100%" click="search()"/>
 			</s:Group>
 		</s:HGroup>
 		<mx:HRule width="100%" height="1"/>
@@ -111,9 +124,12 @@
 			<s:Spacer width="5"/>
 			<s:Image source="@Embed(source='assets/arrow-right.png')" width="7" height="100%" fillMode="clip" click="nextPage()"/>
 			<s:Spacer width="100%"/>
-			<s:Label text="更新数"/>
-			<s:Label text="下载数"/>
-			<s:Label text="评论数"/>
+			<s:HGroup gap="5" visible="{currentSlug.length == 0}">
+				<s:Label text="更新数"/>
+				<s:Label text="下载数"/>
+				<s:Label text="评论数"/>
+			</s:HGroup>
+			<s:Label text="关键字'{currentSlug}'的搜索结果" visible="{currentSlug.length > 0}" includeInLayout="{currentSlug.length > 0}"/>
 		</s:HGroup>
 		<s:Group width="100%" height="100%">
 			<s:Label y="20" text="正在努力从网络获取数据..." fontSize="14" horizontalCenter="0"

@@ -55,6 +55,20 @@
 			{
 				navigateToURL(new URLRequest(Constants.getProductDetailUrl(data.id)));
 			}
+			
+			
+			
+			
+			protected function btnSyncToDevice_clickHandler(event:MouseEvent):void
+			{
+				btnSyncToDevice.enabled = false;
+				btnSyncToDevice.text = "正在同步中...";
+				setTimeout(deferSyncAction, 1);
+			}
+			
+			private function deferSyncAction():void {
+				UIController.instance.installApp(data as AppItem);
+			}
 		]]>
 	</fx:Script>
 	<s:HGroup gap="6" width="355" height="100%">
@@ -69,9 +83,9 @@
 			<components:KPButton id="btnDeleteFromDevice" text="从设备移除" currentState="selected"
 								 visible="{AppItem(data).isDeviceType()}" includeInLayout="{AppItem(data).isDeviceType()}"
 								 click="btnDeleteFromDevice_clickHandler(event)"/>
-			<components:KPButton text="同步"
+			<components:KPButton id="btnSyncToDevice" text="同步"
 								 visible="{AppItem(data).isPcType()}" includeInLayout="{AppItem(data).isPcType()}"
-								 />
+								 click="btnSyncToDevice_clickHandler(event)"/>
 			<s:HGroup visible="{AppItem(data).isStoreType()}" includeInLayout="{AppItem(data).isStoreType()}">
 				<components:KPButton id="btnDetail" text="详情" click="btnDetail_clickHandler(event)"/>
 				<components:KPButton text="购买" click="UIController.instance.addAppToDownload(data as AppItem)"/>

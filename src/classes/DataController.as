@@ -2,6 +2,8 @@ package classes
 {
 	import classes.Constants;
 	
+	import components.StorePage;
+	
 	import flash.events.EventDispatcher;
 	import flash.external.*;
 	import flash.utils.setTimeout;
@@ -48,15 +50,21 @@ package classes
 			return mInstance;
 		}
 		
-		public function getStoreProductList(categoryId:int, page:int, sort:String):void
+		public function getStoreProductList(categoryId:int, page:int, sort:String, slug:String):void
 		{
 			this.retrievingStoreList = true;
 		
 			var params:Array = new Array();
-			if (categoryId)
-				params.push("cid="+categoryId);
-			if (sort)
-				params.push("tab="+sort);
+			if (slug) {
+				params.push("slug="+encodeURIComponent(slug));
+			}
+			else {
+				if (categoryId)
+					params.push("cid="+categoryId);
+				if (sort)
+					params.push("tab="+sort);
+			}
+			
 			if (page)
 				params.push("page="+page);
 			var url:String = Constants.PRODUCT_URL + "?" + params.join("&");
@@ -73,6 +81,9 @@ package classes
 		private function storeResultListener(event:ResultEvent):void {
 			var json:String = String(event.result);
 			var obj:Object = JSON.parse(json);
+			
+			StorePage.totalPageCount = parseInt(obj.pagination.total);
+			
 			itemsOnStore.removeAll();
 			for (var i:int=0; i<obj.products.length; i++) {
 				var item:AppItem = new AppItem();
@@ -88,13 +99,12 @@ package classes
 			this.retrievingStoreList = false;
 		}
 		
-		public function getDeviceProductList():void
+		public function getDeviceProductList(categoryNames:Array):void
 		{
 			this.retrievingDeviceList = true;
-			var categoryNames:Array = ["aqxg", "jyrz1", "klxe", "qzgs", "slkx", "yeyy", "yyms", "zhwh", "zyyx"];
 			CONFIG::ON_PC {
 				for (var i:int=0; i<categoryNames.length; i++) {
-					var categoryXmlFile:String = "C:\\book\\storyList_" + categoryNames[i] + ".xml";
+					var categoryXmlFile:String = UIController.instance.driveProgramName+"\\book\\storyList_"+categoryNames[i]+".xml";
 					ExternalInterface.call("F2C_TRACE", "Xml File::" + categoryXmlFile);
 					var xmlContent:String = ExternalInterface.call("F2C_getDeviceFileContent", categoryXmlFile);
 					xmlContent = xmlContent.substr(xmlContent.indexOf("?>")+2);
@@ -104,12 +114,12 @@ package classes
 						app.name = xml.story[j].name.toString();
 						app.category = categoryNames[i];
 						app.type = AppItemType.DEVICE;
-						app.iconFile = "C:\\book\\" + xml.story[j].icon.toString().split('/').join('\\');
+						app.iconFile = UIController.instance.driveProgramName+"\\book\\"+xml.story[j].icon.toString().split('/').join('\\');
 						app.iconBase64 = ExternalInterface.call("F2C_getDeviceIconBase64", app.iconFile);
 						ExternalInterface.call("F2C_TRACE", app.iconFile);
 						
-						var entry:String = xml.story[j].entry.toString();
-						app.folderName = entry.substr(0, entry.indexOf("/"));
+						var entry:String = xml.story[j].icon.toString();
+						app.folderName = entry.substr(0, entry.lastIndexOf("/"));
 						
 						itemsOnDevice.addItem(app);
 					}

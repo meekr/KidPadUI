@@ -8,6 +8,7 @@
 		 >
 	<fx:Script>
 		<![CDATA[
+			import classes.AppItem;
 			import classes.DataController;
 			import classes.UIController;
 			
@@ -17,10 +18,45 @@
 			
 			import mx.events.FlexEvent;
 			
+			private var categorieArray:Array = ["jyrz1", "qzgs", "aqxg", "zhwh", "slkx", "yyms", "zyyx", "yeyy"];
+			private var currentCategories:Array = ["jyrz1", "qzgs", "aqxg", "zhwh", "slkx", "yyms", "zyyx", "yeyy"];
+			
+			protected function cateButton_clickHandler(event:MouseEvent):void
+			{
+				var button:KPButton = event.currentTarget as KPButton;
+				if (button.currentState == "notSelected") {
+					for (var i:int=0; i<categories.numElements; i++) {
+						var btn:KPButton = categories.getElementAt(i) as KPButton;
+						if (btn == button) {
+							btn.currentState = "selected";
+							if (i == 0)
+								currentCategories = categorieArray;
+							else
+								currentCategories = [categorieArray[i-1]];
+						}
+						else {
+							btn.currentState = "notSelected";
+						}
+					}
+				}
+				
+				DataController.instance.itemsOnDevice.removeAll();
+				DataController.instance.retrievingDeviceList = true;
+				flash.utils.setTimeout(DataController.instance.getDeviceProductList, 30, currentCategories);
+			}
+			
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
-				DataController.instance.retrievingDeviceList = true;
-				flash.utils.setTimeout(DataController.instance.getDeviceProductList, 30);
+				var cats:Array = ["全部", "教育认知", "亲子故事", "安全习惯", "中华文化", "数理科学", "音乐美术", "益智游戏", "幼儿英语"];
+				for (var i:int=0; i<cats.length; i++) {
+					var button:KPButton = new KPButton();
+					button.text = cats[i];
+					button.horizontalPadding = 7;
+					button.currentState = "notSelected";
+					button.addEventListener(MouseEvent.CLICK, cateButton_clickHandler);
+					categories.addElement(button);
+				}
+				categories.getElementAt(0).dispatchEvent(new MouseEvent(MouseEvent.CLICK));
 				
 				UIController.instance.addEventListener(DeviceConnectionChangeEvent.name, deviceConnectionChangeHandler);
 			}
@@ -29,11 +65,53 @@
 			{
 				if (event.connected) {
 					DataController.instance.retrievingDeviceList = true;
-					flash.utils.setTimeout(DataController.instance.getDeviceProductList, 30);
+					flash.utils.setTimeout(DataController.instance.getDeviceProductList, 30, currentCategories);
 				}
 				else {
 					DataController.instance.itemsOnDevice.removeAll();
 				}
+			}
+			
+			private function selectAll():void
+			{
+				for (var i:int=0; i<DataController.instance.itemsOnDevice.length; i++)
+				{
+					var item:AppItem = DataController.instance.itemsOnDevice.getItemAt(i) as AppItem;
+					item.selected = true;
+				}
+			}
+			
+			private function unselectAll():void
+			{
+				for (var i:int=0; i<DataController.instance.itemsOnDevice.length; i++)
+				{
+					var item:AppItem = DataController.instance.itemsOnDevice.getItemAt(i) as AppItem;
+					item.selected = false;
+				}
+			}
+			
+			private function deleteSelected():void
+			{
+				var toBeDeleted:Array = new Array();
+				for (var i:int=0; i<DataController.instance.itemsOnDevice.length; i++)
+				{
+					var item:AppItem = DataController.instance.itemsOnDevice.getItemAt(i) as AppItem;
+					if (item.selected) {
+						toBeDeleted.push(item);
+					}
+				}
+				
+				while (toBeDeleted.length > 0) {
+					var ai:AppItem = toBeDeleted[0] as AppItem;
+					UIController.instance.deleteAppFromDevice(ai);
+					lstDevice.invalidateDisplayList();
+					toBeDeleted.shift();
+				}
+			}
+			
+			private function search():void
+			{
+				
 			}
 		]]>
 	</fx:Script>
@@ -53,6 +131,23 @@
 	</s:Rect>
 	<s:VGroup width="100%" height="100%" gap="0">
 		<s:HGroup width="100%" height="40" verticalAlign="middle" paddingLeft="10" paddingRight="10">
+			<s:HGroup id="categories" gap="0">
+				
+			</s:HGroup>
+			<s:Spacer width="100%"/>
+			<!--<s:Group width="200" height="25">
+				<s:Image source="@Embed(source='assets/search-bg.jpg')" width="100%" height="100%"/>
+				<components:KPTextInput id="searchBox"
+										text="输入关键字查找"
+										skinClass="skins.KPTextInputSkin"
+										width="187" height="100%"
+										backgroundAlpha="0"
+										borderWeight="0"/>
+				<s:Label x="155" width="45" height="100%" click="search()"/>
+			</s:Group>-->
+		</s:HGroup>
+		<mx:HRule width="100%" height="1"/>
+		<s:HGroup width="100%" height="20" verticalAlign="middle" paddingLeft="10" paddingRight="10" gap="5">
 			<s:Label text="设备容量"/>
 			<s:Group width="390" height="16">
 				<s:Rect width="100%" height="100%">
@@ -66,29 +161,16 @@
 					</s:fill>
 				</s:Rect>
 			</s:Group>
+			
 			<s:Spacer width="100%"/>
-			<s:Group width="200" height="25">
-				<s:Image source="@Embed(source='assets/search-bg.jpg')" width="100%" height="100%"/>
-				<components:KPTextInput id="searchBox"
-										text="输入关键字查找"
-										skinClass="skins.KPTextInputSkin"
-										width="187" height="100%"
-										backgroundAlpha="0"
-										borderWeight="0"/>
-				<s:Label x="187" width="45" height="100%" click="trace('search...')"/>
-			</s:Group>
-		</s:HGroup>
-		<mx:HRule width="100%" height="1"/>
-		<s:HGroup width="100%" height="20" verticalAlign="middle" paddingLeft="10" paddingRight="10" gap="5">
-			<s:Spacer width="100%"/>
-			<s:Label text="全选"/>
-			<s:Label text="全不选"/>
-			<s:Label text="从设备删除"/>
+			<s:Label text="全选" click="selectAll()"/>
+			<s:Label text="全不选" click="unselectAll()"/>
+			<s:Label text="从设备删除" click="deleteSelected()"/>
 		</s:HGroup>
 		<s:Group width="100%" height="100%">
 			<s:Label y="20" text="正在努力从设备读取数据..." fontSize="14" horizontalCenter="0"
 					 visible="{DataController.instance.retrievingDeviceList}" includeInLayout="{DataController.instance.retrievingDeviceList}"/>
-			<s:List left="20" right="0" top="5" bottom="0"
+			<s:List id="lstDevice" left="20" right="0" top="5" bottom="0"
 					skinClass="skins.MyListSkin"
 					itemRenderer="renderers.ThumbnailItemRenderer"
 					dataProvider="{DataController.instance.itemsOnDevice}"

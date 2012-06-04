@@ -1,5 +1,7 @@
 package classes
 {
+	import events.DeviceConnectionChangeEvent;
+	
 	import flash.events.EventDispatcher;
 	import flash.external.*;
 	import flash.utils.*;
@@ -43,6 +45,11 @@ package classes
 			if (mInstance == null)
 				mInstance = new UIController();
 			return mInstance;
+		}
+		
+		public function get driveProgramName():String
+		{
+			return mDriveProgramName;
 		}
 		
 		public function externalAddCallback(functionName:String, callback:Function):void
@@ -93,7 +100,13 @@ package classes
 		
 		public function removeAppOnPc(app:AppItem):void
 		{
-			DataController.instance.itemsOnPc.removeItemAt(DataController.instance.itemsOnPc.getItemIndex(app));
+			var idx:int = DataController.instance.itemsOnPc.getItemIndex(app);
+			if (idx > -1) {
+				DataController.instance.itemsOnPc.removeItemAt(idx);
+				CONFIG::ON_PC {
+					ExternalInterface.call("F2C_deleteAppOnPc", app.name);
+				}
+			}
 		}
 		
 		public function installApp(app:AppItem):void
@@ -102,8 +115,12 @@ package classes
 				var arg:String = this.downloadDirectory + app.name + ".npk";
 				var ret:String = ExternalInterface.call("F2C_installApp", arg);
 				if (ret == "1") {
-					// TODO: update category, iconFile, etc.
-					DataController.instance.itemsOnDevice.addItemAt(app, 0);
+					var evt:DeviceConnectionChangeEvent = new DeviceConnectionChangeEvent();
+					evt.connected = deviceDisk.connected;
+					dispatchEvent(evt);
+					//DataController.instance.itemsOnDevice.addItemAt(app, 0);
+					
+					removeAppOnPc(app);
 				}
 			}
 		}
@@ -115,13 +132,10 @@ package classes
 					return false;
 			}
 			
-			var urls:Array = ["004_motionTweenBMP", "007_shapeTween", "dragDrop", "FileBrowser", "stamper", "tellMeYourWishes", "wouldTheyLoveALion"];
-			var url:String = urls[int(Math.random()*urls.length)];
 			var item:Download = new Download();
 			item.appName = app.name;
 			item.npkUrl = app.npkUrl;
 			item.iconUrl = app.iconUrl;
-			trace(item.npkUrl);
 			DataController.instance.itemsDownloading.addItem(item);
 			setTimeout(item.startDownload, 100);
 			return true;
@@ -133,12 +147,13 @@ package classes
 			CONFIG::ON_PC {
 				// appDirectoryPaths: appName,appDirectoryPath,appCategoryXmlFilePath
 				var xmlFile:String = mDriveProgramName+"\\book\\storyList_"+app.category+".xml";
-				var path:String = mDriveProgramName+"\\book\\"+app.folderName;
+				var path:String = mDriveProgramName+"\\book\\"+app.folderName.split("/").join("\\");
 				var arg:String = app.name+","+path+","+xmlFile;
 				ExternalInterface.call("F2C_TRACE", arg);
 				var ret:String = ExternalInterface.call("F2C_deleteAppOnDevice", arg);
-				if (ret == "1")
+				if (ret == "1") {
 					DataController.instance.itemsOnDevice.removeItemAt(DataController.instance.itemsOnDevice.getItemIndex(app));
+				}
 			}
 			return true;
 		}
