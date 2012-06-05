@@ -37,6 +37,7 @@
 			
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
+				return;
 				var account:SharedObject = SharedObject.getLocal("account");
 				username.text = account.data.username;
 				password.text = account.data.password;
@@ -56,7 +57,7 @@
 			<s:Label text="用户名" width="60"/>
 			<components:KPTextInput id="username"
 									color="#ffffff"
-									text=""
+									text="leiping"
 									skinClass="skins.KPTextInputSkin"
 									width="188" height="28"
 									contentBackgroundColor="#63e8fb"
@@ -66,7 +67,7 @@
 			<s:Label text="密  码" width="60"/>
 			<components:KPTextInput id="password"
 									color="#ffffff"
-									text=""
+									text="123456"
 									displayAsPassword="true"
 									skinClass="skins.KPTextInputSkin"
 									width="188" height="28"
@@ -76,9 +77,9 @@
 		<s:HGroup height="20" paddingLeft="0">
 			<s:CheckBox id="chkRemember" label="记住用户名和密码"/>
 		</s:HGroup>
-		<s:HGroup verticalAlign="bottom" paddingLeft="30" gap="10">
+		<s:HGroup verticalAlign="bottom" paddingLeft="30" gap="12">
 			<s:Image id="submitButton" source="@Embed(source='assets/btn-submit.png')" width="115" height="35" click="submitButton_clickHandler(event)"/>
-			<s:Label id="lnkRegister" text="注册" color="#0000FF" fontSize="14" styleName="linkText" click="lnkRegister_clickHandler(event)"/>
+			<s:Label id="lnkRegister" text="注册" styleName="linkText" click="lnkRegister_clickHandler(event)"/>
 		</s:HGroup>
 	</s:VGroup>
 </s:Group>

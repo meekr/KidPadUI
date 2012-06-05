@@ -11,6 +11,7 @@
 			import classes.AppItem;
 			import classes.DataController;
 			import classes.UIController;
+			import classes.Utils;
 			
 			import events.AppItemDeleteEvent;
 			import events.DeviceConnectionChangeEvent;
@@ -102,8 +103,10 @@
 					}
 				}
 				
+				Utils.log2c("total "+toBeDeleted.length+" to be deleted");
 				while (toBeDeleted.length > 0) {
 					var ai:AppItem = toBeDeleted[0] as AppItem;
+					Utils.log2c("deleting "+ai.name);
 					ai.dispatchEvent(new AppItemDeleteEvent());
 					toBeDeleted.shift();
 				}
@@ -112,6 +115,13 @@
 			private function search():void
 			{
 				
+			}
+			
+			private function import2Library():void
+			{
+				CONFIG::ON_PC {
+					ExternalInterface.call("F2C_import2Library", "");
+				}
 			}
 		]]>
 	</fx:Script>
@@ -135,6 +145,7 @@
 				
 			</s:HGroup>
 			<s:Spacer width="100%"/>
+			<components:KPButton text="导入应用" click="import2Library()" enabled="{UIController.instance.deviceDisk.connected}"/>
 			<!--<s:Group width="200" height="25">
 				<s:Image source="@Embed(source='assets/search-bg.jpg')" width="100%" height="100%"/>
 				<components:KPTextInput id="searchBox"

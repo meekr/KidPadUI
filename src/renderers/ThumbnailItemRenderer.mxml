@@ -40,26 +40,24 @@
 			
 			protected function appItemDeleteHandler(event:AppItemDeleteEvent):void
 			{
+				btnDeleteFromDevice.removeEventListener(MouseEvent.CLICK, btnDeleteFromDevice_clickHandler);
+				
 				btnDeleteFromDevice.enabled = false;
 				btnDeleteFromDevice.text = "正在删除中...";
-				setTimeout(deferDeleteAction, 100);
 			}
 			
 			protected function appItemSyncHandler(event:AppItemSyncEvent):void
 			{
+				btnSync.removeEventListener(MouseEvent.CLICK, btnSync_clickHandler);
+				
 				btnSync.enabled = false;
 				btnSync.text = "正在同步中...";
-				setTimeout(deferSyncAction, 100);
 			}
 			
 			private function alertEventHandler(event:CloseEvent):void {
 				if(event.detail == Alert.YES) {
 					(data as AppItem).dispatchEvent(new AppItemDeleteEvent());
 				}
-			}
-			
-			private function deferDeleteAction():void {
-				UIController.instance.deleteAppFromDevice(data as AppItem);
 			}
 			
 			protected function btnDeleteFromDevice_clickHandler(event:MouseEvent):void
@@ -75,10 +73,6 @@
 			protected function btnSync_clickHandler(event:MouseEvent):void
 			{
 				(data as AppItem).dispatchEvent(new AppItemSyncEvent());
-			}
-			
-			private function deferSyncAction():void {
-				UIController.instance.installApp(data as AppItem);
 			}
 			
 			protected function checkbox_changeHandler(event:Event):void

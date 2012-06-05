@@ -1,6 +1,7 @@
 package classes
 {
 	import classes.Constants;
+	import classes.Utils;
 	
 	import components.StorePage;
 	
@@ -108,7 +109,7 @@ package classes
 					var xmlContent:String = ExternalInterface.call("F2C_getDeviceFileContent", categoryXmlFile);
 					xmlContent = xmlContent.substr(xmlContent.indexOf("?>")+2);
 					var xml:XML = new XML(xmlContent);
-					ExternalInterface.call("F2C_TRACE", "Xml File:" + categoryXmlFile + " - has " + xml.story.length() + " stories");
+					Utils.log2c("Xml File:" + categoryXmlFile + " - has " + xml.story.length() + " stories");
 					for (var j:int=0; j<xml.story.length(); j++) {
 						var app:AppItem = new AppItem();
 						app.name = xml.story[j].name.toString();
@@ -116,7 +117,6 @@ package classes
 						app.type = AppItemType.DEVICE;
 						app.iconFile = UIController.instance.driveProgramName+"\\book\\"+xml.story[j].icon.toString().split('/').join('\\');
 						app.iconBase64 = ExternalInterface.call("F2C_getDeviceIconBase64", app.iconFile);
-						ExternalInterface.call("F2C_TRACE", app.iconFile);
 						
 						var entry:String = xml.story[j].icon.toString();
 						app.folderName = entry.substr(0, entry.lastIndexOf("/"));

@@ -78,14 +78,6 @@
 					toBeDeleted.shift();
 				}
 			}
-			
-			private function import2Library():void
-			{
-				CONFIG::ON_PC {
-					ExternalInterface.call("F2C_import2Library", "");
-					cate1Button.dispatchEvent(new MouseEvent(MouseEvent.CLICK));
-				}
-			}
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -106,7 +98,6 @@
 			<components:KPButton id="cate1Button" text="已下载" click="cateButton_clickHandler(event)" currentState="notSelected"/>
 			<components:KPButton id="cate2Button" text="下载中" click="cateButton_clickHandler(event)" currentState="notSelected"/>
 			<s:Spacer width="100%"/>
-			<components:KPButton text="导入应用" click="import2Library()"/>
 			<!--<s:Group width="200" height="25">
 				<s:Image source="@Embed(source='assets/search-bg.jpg')" width="100%" height="100%"/>
 				<components:KPTextInput id="searchBox"

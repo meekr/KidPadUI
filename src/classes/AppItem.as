@@ -1,7 +1,11 @@
 package classes
 {
+	import events.AppItemDeleteEvent;
+	import events.AppItemSyncEvent;
+	
 	import flash.events.EventDispatcher;
 	import flash.utils.ByteArray;
+	import flash.utils.*;
 	
 	import mx.controls.Image;
 	import mx.utils.Base64Decoder;
@@ -26,6 +30,8 @@ package classes
 		
 		public function AppItem()
 		{
+			addEventListener(AppItemDeleteEvent.name, appItemDeleteHandler);
+			addEventListener(AppItemSyncEvent.name, appItemSyncHandler);
 		}
 		
 		public function dispose():void
@@ -59,6 +65,18 @@ package classes
 		public function isStoreType():Boolean
 		{
 			return type == AppItemType.STORE;
+		}
+		
+		
+		
+		protected function appItemDeleteHandler(event:AppItemDeleteEvent):void
+		{
+			setTimeout(UIController.instance.deleteAppFromDevice, 100, this);
+		}
+		
+		protected function appItemSyncHandler(event:AppItemSyncEvent):void
+		{
+			setTimeout(UIController.instance.installApp, 100, this);
 		}
 	}
 }

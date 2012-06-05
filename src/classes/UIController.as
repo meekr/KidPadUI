@@ -94,7 +94,6 @@ package classes
 			app.name = appName;
 			app.type = AppItemType.PC;
 			app.iconUrl = this.downloadDirectory + appName + ".png";
-			ExternalInterface.call("F2C_TRACE", app.iconUrl);
 			DataController.instance.itemsOnPc.addItem(app);
 		}
 		
@@ -149,11 +148,11 @@ package classes
 				var xmlFile:String = mDriveProgramName+"\\book\\storyList_"+app.category+".xml";
 				var path:String = mDriveProgramName+"\\book\\"+app.folderName.split("/").join("\\");
 				var arg:String = app.name+","+path+","+xmlFile;
-				ExternalInterface.call("F2C_TRACE", arg);
+				Utils.log2c(arg);
 				var ret:String = ExternalInterface.call("F2C_deleteAppOnDevice", arg);
 				if (ret == "1") {
 					var idx:int = DataController.instance.itemsOnDevice.getItemIndex(app);
-					ExternalInterface.call("F2C_TRACE", "delete app at " + idx);
+					Utils.log2c("delete app at " + idx);
 					DataController.instance.itemsOnDevice.removeItemAt(idx);
 				}
 			}
