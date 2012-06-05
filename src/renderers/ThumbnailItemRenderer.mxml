@@ -17,6 +17,7 @@
 			import events.AppItemSyncEvent;
 			
 			import mx.controls.*;
+			import mx.core.UIComponent;
 			import mx.events.CloseEvent;
 			
 			override public function set data(value:Object):void
@@ -62,6 +63,9 @@
 			
 			protected function btnDeleteFromDevice_clickHandler(event:MouseEvent):void
 			{
+				var comp:UIComponent = event.currentTarget as UIComponent;
+				if (!comp.enabled) return;
+				
 				var confirmDlg:Object = Alert.show("您确认删除\"" + AppItem(data).name + "\"吗？", "确认", Alert.YES|Alert.NO, null, alertEventHandler, null, Alert.YES); 
 			}
 			
@@ -72,6 +76,9 @@
 			
 			protected function btnSync_clickHandler(event:MouseEvent):void
 			{
+				var comp:UIComponent = event.currentTarget as UIComponent;
+				if (!comp.enabled) return;
+				
 				(data as AppItem).dispatchEvent(new AppItemSyncEvent());
 			}
 			
@@ -97,6 +104,7 @@
 								 click="btnDeleteFromDevice_clickHandler(event)"/>
 			<components:KPButton id="btnSync" text="同步"
 								 visible="{AppItem(data).isPcType()}" includeInLayout="{AppItem(data).isPcType()}"
+								 enabled="{UIController.instance.deviceDisk.connected}"
 								 click="btnSync_clickHandler(event)"/>
 			<s:HGroup visible="{AppItem(data).isStoreType()}" includeInLayout="{AppItem(data).isStoreType()}">
 				<components:KPButton id="btnDetail" text="详情" click="btnDetail_clickHandler(event)"/>

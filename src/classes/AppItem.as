@@ -4,8 +4,8 @@ package classes
 	import events.AppItemSyncEvent;
 	
 	import flash.events.EventDispatcher;
-	import flash.utils.ByteArray;
 	import flash.utils.*;
+	import flash.utils.ByteArray;
 	
 	import mx.controls.Image;
 	import mx.utils.Base64Decoder;
@@ -76,6 +76,7 @@ package classes
 		
 		protected function appItemSyncHandler(event:AppItemSyncEvent):void
 		{
+			classes.Utils.log2c("sync "+this.name);
 			setTimeout(UIController.instance.installApp, 100, this);
 		}
 	}

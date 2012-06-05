@@ -103,10 +103,8 @@
 					}
 				}
 				
-				Utils.log2c("total "+toBeDeleted.length+" to be deleted");
 				while (toBeDeleted.length > 0) {
 					var ai:AppItem = toBeDeleted[0] as AppItem;
-					Utils.log2c("deleting "+ai.name);
 					ai.dispatchEvent(new AppItemDeleteEvent());
 					toBeDeleted.shift();
 				}

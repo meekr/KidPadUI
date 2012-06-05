@@ -11,8 +11,10 @@
 			import classes.Constants;
 			import classes.DataController;
 			import classes.UIController;
+			
 			import events.AppItemSyncEvent;
 			
+			import mx.core.UIComponent;
 			import mx.events.FlexEvent;
 			
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
@@ -61,8 +63,11 @@
 				}
 			}
 			
-			private function syncSelected():void
+			private function syncSelected(event:MouseEvent):void
 			{
+				var comp:UIComponent = event.currentTarget as UIComponent;
+				if (!comp.enabled) return;
+				
 				var toBeDeleted:Array = new Array();
 				for (var i:int=0; i<DataController.instance.itemsOnPc.length; i++)
 				{
@@ -114,7 +119,7 @@
 			<s:Spacer width="100%"/>
 			<s:Label text="全选" click="selectAll()"/>
 			<s:Label text="全不选" click="unselectAll()"/>
-			<s:Label text="同步" click="syncSelected()"/>
+			<s:Label text="同步" enabled="{UIController.instance.deviceDisk.connected}" click="syncSelected(event)"/>
 		</s:HGroup>
 		<s:Group width="100%" height="100%">
 			<s:List id="downloadedList" left="20" right="0" top="5" bottom="0"
