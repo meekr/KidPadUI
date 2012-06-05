@@ -49,6 +49,14 @@
 				}
 			}
 			
+			private function sortProductList(sort:String):void
+			{
+				currentSlug = "";
+				currentPage = 1;
+				currentSort = sort;
+				DataController.instance.getStoreProductList(currentCid, currentPage, currentSort, currentSlug);
+			}
+			
 			private function previousPage():void
 			{
 				if (currentPage > 1) {
@@ -125,9 +133,9 @@
 			<s:Image source="@Embed(source='assets/arrow-right.png')" width="7" height="100%" fillMode="clip" click="nextPage()"/>
 			<s:Spacer width="100%"/>
 			<s:HGroup gap="5" visible="{currentSlug.length == 0}">
-				<s:Label text="更新数"/>
-				<s:Label text="下载数"/>
-				<s:Label text="评论数"/>
+				<s:Label text="更新数" click="sortProductList('update')"/>
+				<s:Label text="下载数" click="sortProductList('download')"/>
+				<s:Label text="评论数" click="sortProductList('comment')"/>
 			</s:HGroup>
 			<s:Label text="关键字'{currentSlug}'的搜索结果" visible="{currentSlug.length > 0}" includeInLayout="{currentSlug.length > 0}"/>
 		</s:HGroup>

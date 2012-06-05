@@ -3,16 +3,46 @@
 		 xmlns:s="library://ns.adobe.com/flex/spark" 
 		 xmlns:mx="library://ns.adobe.com/flex/mx" width="414" height="212"
 		 xmlns:components="components.*"
-		 xmlns:classes="classes.*">
+		 xmlns:classes="classes.*"
+		 creationComplete="group1_creationCompleteHandler(event)">
 	
 	<fx:Script>
 		<![CDATA[
+			import classes.Constants;
 			import classes.UIController;
+			
+			import mx.events.FlexEvent;
 			
 			protected function submitButton_clickHandler(event:MouseEvent):void
 			{
+				var account:SharedObject = SharedObject.getLocal("account");
+				account.data.rememberMe = chkRemember.selected;
+				if (chkRemember.selected) {
+					account.data.username = username.text;
+					account.data.password = password.text;
+				}
+				else {
+					account.data.username = "";
+					account.data.password = "";
+				}
+				account.flush();
+				
 				UIController.instance.user.login(username.text, password.text);
 			}
+			
+			protected function lnkRegister_clickHandler(event:MouseEvent):void
+			{
+				navigateToURL(new URLRequest(Constants.SIGNUP_URL));
+			}
+			
+			protected function group1_creationCompleteHandler(event:FlexEvent):void
+			{
+				var account:SharedObject = SharedObject.getLocal("account");
+				username.text = account.data.username;
+				password.text = account.data.password;
+				chkRemember.selected = account.data.rememberMe;
+			}
+			
 		]]>
 	</fx:Script>
 	
@@ -22,27 +52,33 @@
 	<s:Image source="@Embed(source='assets/login-bg.png')" width="100%" height="100%"/>
 	<s:VGroup x="77" y="20" horizontalAlign="center">
 		<s:Label text="登录助手" fontSize="24" color="#aaaaaa" horizontalCenter="0"/>
-		<s:HGroup height="40" verticalAlign="middle">
+		<s:HGroup height="34" verticalAlign="middle">
 			<s:Label text="用户名" width="60"/>
 			<components:KPTextInput id="username"
 									color="#ffffff"
-									text="leiping"
+									text=""
 									skinClass="skins.KPTextInputSkin"
 									width="188" height="28"
 									contentBackgroundColor="#63e8fb"
 									/>
 		</s:HGroup>
-		<s:HGroup height="40" verticalAlign="middle">
+		<s:HGroup height="34" verticalAlign="middle">
 			<s:Label text="密  码" width="60"/>
 			<components:KPTextInput id="password"
 									color="#ffffff"
-									text="123456"
+									text=""
 									displayAsPassword="true"
 									skinClass="skins.KPTextInputSkin"
 									width="188" height="28"
 									contentBackgroundColor="#63e8fb"
 									/>
 		</s:HGroup>
-		<s:Image id="submitButton" source="@Embed(source='assets/btn-submit.png')" horizontalCenter="-100" width="115" height="35" click="submitButton_clickHandler(event)"/>
+		<s:HGroup height="20" paddingLeft="0">
+			<s:CheckBox id="chkRemember" label="记住用户名和密码"/>
+		</s:HGroup>
+		<s:HGroup verticalAlign="bottom" paddingLeft="30" gap="10">
+			<s:Image id="submitButton" source="@Embed(source='assets/btn-submit.png')" width="115" height="35" click="submitButton_clickHandler(event)"/>
+			<s:Label id="lnkRegister" text="注册" color="#0000FF" fontSize="14" styleName="linkText" click="lnkRegister_clickHandler(event)"/>
+		</s:HGroup>
 	</s:VGroup>
 </s:Group>

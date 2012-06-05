@@ -4,10 +4,11 @@ package classes
 	
 	public class Constants
 	{
-		private static var DOMAIN:String = "http://223.4.2.218/";
+		private static var DOMAIN:String = "http://www.tongban1.com/";
 		
 		public static var LOGIN_URL:String = DOMAIN + "client/user/login";
 		public static var PRODUCT_URL:String = DOMAIN + "client/product/list";
+		public static var SIGNUP_URL:String = DOMAIN + "signup";
 		
 		public static function getProductDetailUrl(id:int):String
 		{

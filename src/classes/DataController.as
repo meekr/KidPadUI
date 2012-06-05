@@ -68,6 +68,7 @@ package classes
 			if (page)
 				params.push("page="+page);
 			var url:String = Constants.PRODUCT_URL + "?" + params.join("&");
+			trace("STORE LIST URL: "+url);
 			
 			var service:HTTPService = new HTTPService();
 			service.url = url;
@@ -92,7 +93,6 @@ package classes
 				item.description = obj.products[i].plain + "\n\n适合年龄：" + obj.products[i].age;
 				item.type = AppItemType.STORE;
 				item.npkUrl = Constants.getNpkUrl(obj.products[i].download_link);
-				trace(item.npkUrl);
 				item.iconUrl = Constants.getThumbUrl(obj.products[i].thumbs.s);
 				itemsOnStore.addItem(item);
 			}

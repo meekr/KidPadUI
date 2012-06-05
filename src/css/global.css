@@ -58,3 +58,7 @@ s|Label.whiteTitle {
 	fontSize:14pt;
 	textAlign:center;
 }
+
+.linkText {
+	textDecoration:underline;
+}
