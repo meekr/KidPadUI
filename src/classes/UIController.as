@@ -134,10 +134,10 @@ package classes
 			var item:Download = new Download();
 			item.appName = app.name;
 			item.npkUrl = app.npkUrl;
-			item.npkUrl = "http://livedocs.adobe.com/flash/9.0/main/samples/Flash_Lite_2x.zip";
 			item.iconUrl = app.iconUrl;
 			DataController.instance.itemsDownloading.addItem(item);
-			setTimeout(item.startDownload, 100);
+			//setTimeout(item.startDownload, 100);
+			item.startDownload();
 			return true;
 		}
 		

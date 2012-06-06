@@ -12,6 +12,8 @@ package classes
 	import flash.utils.ByteArray;
 	
 	import mx.controls.Alert;
+	import mx.rpc.events.ResultEvent;
+	import mx.rpc.http.HTTPService;
 	import mx.utils.Base64Encoder;
 	
 	[Bindable]
@@ -44,12 +46,26 @@ package classes
 		
 		public function startDownload():void
 		{
-			var request:URLRequest = new URLRequest();
-			request.url = npkUrl;
-			npkLoader.load(request);
-			
-			request.url = iconUrl;
-			pngLoader.load(request);
+			var service:HTTPService = new HTTPService();
+			service.url = npkUrl;
+			service.method = "POST";
+			service.resultFormat = "text";
+			service.addEventListener(ResultEvent.RESULT, resultListener);
+			service.showBusyCursor = true;
+			service.send(this);
+		}
+		
+		private function resultListener(event:ResultEvent):void {
+			var json:String = String(event.result);
+			var obj:Object = JSON.parse(json);
+			if (obj.state == "ok") {
+				var request:URLRequest = new URLRequest();
+				request.url = Constants.getRealNpkLink(obj.link);
+				npkLoader.load(request);
+				
+				request.url = iconUrl;
+				pngLoader.load(request);
+			}
 		}
 		
 		public function pauseDownload():void

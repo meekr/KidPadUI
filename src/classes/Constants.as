@@ -20,6 +20,11 @@ package classes
 			return DOMAIN + npkPath + "?token=" + UIController.instance.user.token;
 		}
 		
+		public static function getRealNpkLink(link:String):String
+		{
+			return DOMAIN + link;
+		}
+		
 		public static function getThumbUrl(thumbPath:String):String
 		{
 			return DOMAIN + thumbPath;
