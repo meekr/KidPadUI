@@ -25,8 +25,6 @@
 				super.data = value;
 				var item:AppItem = value as AppItem;
 				if (item) {
-					item.addEventListener(AppItemDeleteEvent.name, appItemDeleteHandler);
-					item.addEventListener(AppItemSyncEvent.name, appItemSyncHandler);
 					if (item.isDeviceType()) {
 						thumbnail.load(item.iconByteArray);
 					}
@@ -39,22 +37,6 @@
 				}
 			}
 			
-			protected function appItemDeleteHandler(event:AppItemDeleteEvent):void
-			{
-				btnDeleteFromDevice.removeEventListener(MouseEvent.CLICK, btnDeleteFromDevice_clickHandler);
-				
-				btnDeleteFromDevice.enabled = false;
-				btnDeleteFromDevice.text = "正在删除中...";
-			}
-			
-			protected function appItemSyncHandler(event:AppItemSyncEvent):void
-			{
-				btnSync.removeEventListener(MouseEvent.CLICK, btnSync_clickHandler);
-				
-				btnSync.enabled = false;
-				btnSync.text = "正在同步中...";
-			}
-			
 			private function alertEventHandler(event:CloseEvent):void {
 				if(event.detail == Alert.YES) {
 					(data as AppItem).dispatchEvent(new AppItemDeleteEvent());
@@ -63,9 +45,6 @@
 			
 			protected function btnDeleteFromDevice_clickHandler(event:MouseEvent):void
 			{
-				var comp:UIComponent = event.currentTarget as UIComponent;
-				if (!comp.enabled) return;
-				
 				var confirmDlg:Object = Alert.show("您确认删除\"" + AppItem(data).name + "\"吗？", "确认", Alert.YES|Alert.NO, null, alertEventHandler, null, Alert.YES); 
 			}
 			
@@ -76,9 +55,6 @@
 			
 			protected function btnSync_clickHandler(event:MouseEvent):void
 			{
-				var comp:UIComponent = event.currentTarget as UIComponent;
-				if (!comp.enabled) return;
-				
 				(data as AppItem).dispatchEvent(new AppItemSyncEvent());
 			}
 			
@@ -86,7 +62,6 @@
 			{
 				data.selected = checkbox.selected;
 			}
-			
 		]]>
 	</fx:Script>
 	<s:HGroup gap="6" width="355" height="100%">
@@ -99,12 +74,19 @@
 			<s:Label text="{data.name}" fontSize="15"/>
 			<mx:Text htmlText="{data.description}" width="100%"/>
 			<s:Spacer height="100%"/>
-			<components:KPButton id="btnDeleteFromDevice" text="从设备移除" currentState="selected"
-								 visible="{AppItem(data).isDeviceType()}" includeInLayout="{AppItem(data).isDeviceType()}"
+			<components:KPButton id="btnDeleteFromDevice" currentState="selected"
+								 visible="{AppItem(data).isDeviceType()}"
+								 includeInLayout="{AppItem(data).isDeviceType()}"
+								 text="{AppItem(data).deviceItemText}"
+								 enabled="{UIController.instance.deviceDisk.connected &amp;&amp; AppItem(data).deviceItemEnabled}"
+								 mouseEnabled="{UIController.instance.deviceDisk.connected &amp;&amp; AppItem(data).deviceItemEnabled}"
 								 click="btnDeleteFromDevice_clickHandler(event)"/>
-			<components:KPButton id="btnSync" text="同步"
-								 visible="{AppItem(data).isPcType()}" includeInLayout="{AppItem(data).isPcType()}"
-								 enabled="{UIController.instance.deviceDisk.connected}"
+			<components:KPButton id="btnSync"
+								 visible="{AppItem(data).isPcType()}"
+								 includeInLayout="{AppItem(data).isPcType()}"
+								 text="{AppItem(data).localItemText}"
+								 enabled="{UIController.instance.deviceDisk.connected &amp;&amp; AppItem(data).localItemEnabled}"
+								 mouseEnabled="{UIController.instance.deviceDisk.connected &amp;&amp; AppItem(data).localItemEnabled}"
 								 click="btnSync_clickHandler(event)"/>
 			<s:HGroup visible="{AppItem(data).isStoreType()}" includeInLayout="{AppItem(data).isStoreType()}">
 				<components:KPButton id="btnDetail" text="详情" click="btnDetail_clickHandler(event)"/>

@@ -65,12 +65,10 @@
 			
 			protected function deviceConnectionChangeHandler(event:DeviceConnectionChangeEvent):void
 			{
+				DataController.instance.itemsOnDevice.removeAll();
 				if (event.connected) {
 					DataController.instance.retrievingDeviceList = true;
 					flash.utils.setTimeout(DataController.instance.getDeviceProductList, 30, currentCategories);
-				}
-				else {
-					DataController.instance.itemsOnDevice.removeAll();
 				}
 			}
 			
@@ -143,7 +141,10 @@
 				
 			</s:HGroup>
 			<s:Spacer width="100%"/>
-			<components:KPButton text="导入应用" click="import2Library()" enabled="{UIController.instance.deviceDisk.connected}"/>
+			<components:KPButton text="导入应用"
+								 click="import2Library()"
+								 enabled="{UIController.instance.deviceDisk.connected}"
+								 mouseEnabled="{UIController.instance.deviceDisk.connected}"/>
 			<!--<s:Group width="200" height="25">
 				<s:Image source="@Embed(source='assets/search-bg.jpg')" width="100%" height="100%"/>
 				<components:KPTextInput id="searchBox"

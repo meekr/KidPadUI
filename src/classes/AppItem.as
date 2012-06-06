@@ -28,6 +28,12 @@ package classes
 		public var iconBase64:String;
 		public var iconFile:String;
 		
+		public var localItemText:String = "同步";
+		public var localItemEnabled:Boolean = true;
+		
+		public var deviceItemText:String = "从设备移除";
+		public var deviceItemEnabled:Boolean = true;
+		
 		public function AppItem()
 		{
 			addEventListener(AppItemDeleteEvent.name, appItemDeleteHandler);
@@ -71,12 +77,16 @@ package classes
 		
 		protected function appItemDeleteHandler(event:AppItemDeleteEvent):void
 		{
+			deviceItemText = "正在删除中...";
+			deviceItemEnabled = false;
 			setTimeout(UIController.instance.deleteAppFromDevice, 100, this);
 		}
 		
 		protected function appItemSyncHandler(event:AppItemSyncEvent):void
 		{
 			classes.Utils.log2c("sync "+this.name);
+			localItemText = "正在同步中...";
+			localItemEnabled = false;
 			setTimeout(UIController.instance.installApp, 100, this);
 		}
 	}
