@@ -1,5 +1,7 @@
 package classes
 {
+	import components.DevicePage;
+	
 	import events.DeviceConnectionChangeEvent;
 	
 	import flash.events.EventDispatcher;
@@ -114,12 +116,14 @@ package classes
 				var arg:String = this.downloadDirectory + app.name + ".npk";
 				var ret:String = ExternalInterface.call("F2C_installApp", arg);
 				if (ret == "1") {
-					var evt:DeviceConnectionChangeEvent = new DeviceConnectionChangeEvent();
-					evt.connected = deviceDisk.connected;
-					dispatchEvent(evt);
-					//DataController.instance.itemsOnDevice.addItemAt(app, 0);
-					
-					removeAppOnPc(app);
+					DevicePage.listIsDirty = true;
+					app.localItemText = "已安装";
+					app.localItemEnabled = false;
+					//removeAppOnPc(app);
+				}
+				else {
+					app.localItemText = "同步";
+					app.localItemEnabled = true;
 				}
 			}
 		}
@@ -155,6 +159,10 @@ package classes
 					var idx:int = DataController.instance.itemsOnDevice.getItemIndex(app);
 					Utils.log2c("delete app at " + idx);
 					DataController.instance.itemsOnDevice.removeItemAt(idx);
+				}
+				else {
+					app.deviceItemText = "从设备移除";
+					app.deviceItemEnabled = true;
 				}
 			}
 			return true;

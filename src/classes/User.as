@@ -12,6 +12,7 @@ package classes
 		public var username:String = "NONE";
 		public var password:String;
 		public var token:String;
+		public var hcode:String;
 		
 		public var loggedIn:Boolean;
 		
@@ -38,6 +39,7 @@ package classes
 			if (obj.state == "valid") {
 				this.loggedIn = true;
 				this.token = obj.data.token;
+				this.hcode = obj.data.user.hcode;
 			}
 			else {
 				this.loggedIn = false;

@@ -23,6 +23,23 @@
 			private var categorieArray:Array = ["jyrz1", "qzgs", "aqxg", "zhwh", "slkx", "yyms", "zyyx", "yeyy"];
 			private var currentCategories:Array = ["jyrz1", "qzgs", "aqxg", "zhwh", "slkx", "yyms", "zyyx", "yeyy"];
 			
+			private static var _instance:DevicePage;
+			public static var listIsDirty:Boolean;
+			
+			public static function get instance():DevicePage
+			{
+				return _instance;
+			}
+			
+			public function updateList():void
+			{
+				if (listIsDirty) {
+					DataController.instance.retrievingDeviceList = true;
+					flash.utils.setTimeout(DataController.instance.getDeviceProductList, 30, currentCategories);
+					listIsDirty = false;
+				}
+			}
+			
 			protected function cateButton_clickHandler(event:MouseEvent):void
 			{
 				var button:KPButton = event.currentTarget as KPButton;
@@ -49,6 +66,8 @@
 			
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
+				_instance = this;
+				
 				var cats:Array = ["全部", "教育认知", "亲子故事", "安全习惯", "中华文化", "数理科学", "音乐美术", "益智游戏", "幼儿英语"];
 				for (var i:int=0; i<cats.length; i++) {
 					var button:KPButton = new KPButton();
@@ -141,10 +160,10 @@
 				
 			</s:HGroup>
 			<s:Spacer width="100%"/>
-			<components:KPButton text="导入应用"
+			<!--<components:KPButton text="导入应用"
 								 click="import2Library()"
 								 enabled="{UIController.instance.deviceDisk.connected}"
-								 mouseEnabled="{UIController.instance.deviceDisk.connected}"/>
+								 mouseEnabled="{UIController.instance.deviceDisk.connected}"/>-->
 			<!--<s:Group width="200" height="25">
 				<s:Image source="@Embed(source='assets/search-bg.jpg')" width="100%" height="100%"/>
 				<components:KPTextInput id="searchBox"
@@ -162,7 +181,7 @@
 			<s:Group width="390" height="16">
 				<s:Rect width="100%" height="100%">
 					<s:fill>
-						<s:SolidColor color="#DDDDDD"/>
+						<s:SolidColor color="#BBBBBB"/>
 					</s:fill>
 				</s:Rect>
 				<s:Rect id="rcPercentage" height="100%">
@@ -170,6 +189,9 @@
 						<s:SolidColor color="#99cc00"/>
 					</s:fill>
 				</s:Rect>
+				<s:Label text="{UIController.instance.deviceDisk.volumeStatus}"
+						 fontSize="11" color="#ffffff" width="100%" height="100%"
+						 textAlign="center" verticalAlign="middle"/>
 			</s:Group>
 			
 			<s:Spacer width="100%"/>

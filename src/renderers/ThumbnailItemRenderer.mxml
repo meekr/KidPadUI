@@ -74,23 +74,24 @@
 			<s:Label text="{data.name}" fontSize="15"/>
 			<mx:Text htmlText="{data.description}" width="100%"/>
 			<s:Spacer height="100%"/>
-			<components:KPButton id="btnDeleteFromDevice" currentState="selected"
-								 visible="{AppItem(data).isDeviceType()}"
-								 includeInLayout="{AppItem(data).isDeviceType()}"
-								 text="{AppItem(data).deviceItemText}"
-								 enabled="{UIController.instance.deviceDisk.connected &amp;&amp; AppItem(data).deviceItemEnabled}"
-								 mouseEnabled="{UIController.instance.deviceDisk.connected &amp;&amp; AppItem(data).deviceItemEnabled}"
-								 click="btnDeleteFromDevice_clickHandler(event)"/>
-			<components:KPButton id="btnSync"
-								 visible="{AppItem(data).isPcType()}"
-								 includeInLayout="{AppItem(data).isPcType()}"
-								 text="{AppItem(data).localItemText}"
-								 enabled="{UIController.instance.deviceDisk.connected &amp;&amp; AppItem(data).localItemEnabled}"
-								 mouseEnabled="{UIController.instance.deviceDisk.connected &amp;&amp; AppItem(data).localItemEnabled}"
-								 click="btnSync_clickHandler(event)"/>
 			<s:HGroup visible="{AppItem(data).isStoreType()}" includeInLayout="{AppItem(data).isStoreType()}">
 				<components:KPButton id="btnDetail" text="详情" click="btnDetail_clickHandler(event)"/>
 				<components:KPButton text="购买" click="UIController.instance.addAppToDownload(data as AppItem)"/>
+			</s:HGroup>
+			<s:HGroup visible="{AppItem(data).isPcType()}" includeInLayout="{AppItem(data).isPcType()}">
+				<components:KPButton id="btnSync"
+									 text="{AppItem(data).localItemText}"
+									 enabled="{UIController.instance.deviceDisk.connected &amp;&amp; AppItem(data).localItemEnabled}"
+									 mouseEnabled="{UIController.instance.deviceDisk.connected &amp;&amp; AppItem(data).localItemEnabled}"
+									 click="btnSync_clickHandler(event)"/>
+				<components:KPButton id="btnDeleteLocal" text="删除" click="UIController.instance.removeAppOnPc(data as AppItem)"/>
+			</s:HGroup>
+			<s:HGroup visible="{AppItem(data).isDeviceType()}" includeInLayout="{AppItem(data).isDeviceType()}">
+				<components:KPButton id="btnDeleteFromDevice" currentState="selected"
+									 text="{AppItem(data).deviceItemText}"
+									 enabled="{UIController.instance.deviceDisk.connected &amp;&amp; AppItem(data).deviceItemEnabled}"
+									 mouseEnabled="{UIController.instance.deviceDisk.connected &amp;&amp; AppItem(data).deviceItemEnabled}"
+									 click="btnDeleteFromDevice_clickHandler(event)"/>
 			</s:HGroup>
 		</s:VGroup>
 	</s:HGroup>

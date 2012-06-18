@@ -6,16 +6,31 @@
 		 xmlns:classes="classes.*">
 	<fx:Script>
 		<![CDATA[
-			import classes.UIController;
 			import classes.DataController;
+			import classes.UIController;
 			
 			protected function channel_clickHandler(index:int):void
 			{
 				viewStack.selectedIndex = index;
 				channelIndicator.visible = index > 0;
-				channelIndicator.y = 117 + (index-1)*67;
+				channelIndicator.y = 117 + (index-1)*68;
+				
+				if (index == 2 && devicePage) {
+					devicePage.updateList();
+				}
 			}
 			
+			protected function lbl_rollOverHandler(event:MouseEvent):void
+			{
+				var lbl:Label = event.currentTarget as Label;
+				lbl.setStyle("textDecoration", "underline");
+			}
+			
+			protected function lbl_rollOutHandler(event:MouseEvent):void
+			{
+				var lbl:Label = event.currentTarget as Label;
+				lbl.setStyle("textDecoration", "none");
+			}
 		]]>
 	</fx:Script>
 	<fx:Declarations>
@@ -45,6 +60,11 @@
 			<s:SolidColor color="#96bd2c"/>
 		</s:fill>
 	</s:Rect>
+	<s:Rect x="0" y="314" width="224" height="67">
+		<s:fill>
+			<s:SolidColor color="#bd882c"/>
+		</s:fill>
+	</s:Rect>
 	<s:VGroup id="leftTabBar" gap="0">
 		<s:Group width="100%" height="110" click="channel_clickHandler(0)">
 			<mx:Image id="avatar" source="@Embed('assets/avatar.png')" x="13" y="13" width="62" height="62"/>
@@ -52,9 +72,14 @@
 			<s:Label x="13" y="82" width="199" height="18" text="{UIController.instance.deviceDisk.connectStatus}"/>
 			
 		</s:Group>
-		<s:Label styleName="whiteTitle" width="224" height="67" text="应用商店" verticalAlign="middle" click="channel_clickHandler(1)"/>
-		<s:Label styleName="whiteTitle" width="224" height="67" text="下载管理" verticalAlign="middle" click="channel_clickHandler(2)"/>
-		<s:Label styleName="whiteTitle" width="224" height="67" text="设备管理" verticalAlign="middle" click="channel_clickHandler(3)"/>
+		<s:Label id="lblStore" styleName="whiteTitle" width="224" height="67" text="应用商店" verticalAlign="middle" click="channel_clickHandler(1)"
+				 rollOver="lbl_rollOverHandler(event)" rollOut="lbl_rollOutHandler(event)"/>
+		<s:Label id="lblDownload" styleName="whiteTitle" width="224" height="67" text="下载管理" verticalAlign="middle" click="channel_clickHandler(2)"
+				 rollOver="lbl_rollOverHandler(event)" rollOut="lbl_rollOutHandler(event)"/>
+		<s:Label id="lblDevice" styleName="whiteTitle" width="224" height="67" text="设备管理" verticalAlign="middle" click="channel_clickHandler(3)"
+				 rollOver="lbl_rollOverHandler(event)" rollOut="lbl_rollOutHandler(event)"/>
+		<s:Label id="lblUpdate" styleName="whiteTitle" width="224" height="67" text="系统升级" verticalAlign="middle" click="channel_clickHandler(4)"
+				 rollOver="lbl_rollOverHandler(event)" rollOut="lbl_rollOutHandler(event)"/>
 	</s:VGroup>
 	<mx:ViewStack id="viewStack" x="224" y="10" width="100%" height="100%">
 		<s:NavigatorContent width="100%" height="100%">
@@ -67,7 +92,10 @@
 			<components:DownloadPage width="100%" height="100%"/>
 		</s:NavigatorContent>
 		<s:NavigatorContent width="100%" height="100%">
-			<components:DevicePage width="100%" height="100%"/>
+			<components:DevicePage id="devicePage" width="100%" height="100%"/>
+		</s:NavigatorContent>
+		<s:NavigatorContent width="100%" height="100%">
+			<components:UpdatePage id="updatePage" width="100%" height="100%"/>
 		</s:NavigatorContent>
 	</mx:ViewStack>
 	<s:Image id="channelIndicator" source="@Embed(source='assets/channel-selected-arrow.jpg')" x="205" y="117" width="19" height="53" visible="false"/>

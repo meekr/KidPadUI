@@ -55,6 +55,7 @@ components|HomePage s|Label {
 
 s|Label.whiteTitle {
 	color:#FFFFFF;
+	cursor:hand;
 	fontSize:14pt;
 	textAlign:center;
 }
