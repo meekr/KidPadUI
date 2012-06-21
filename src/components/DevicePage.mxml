@@ -21,23 +21,13 @@
 			import mx.events.FlexEvent;
 			
 			private var categorieArray:Array = ["jyrz1", "qzgs", "aqxg", "zhwh", "slkx", "yyms", "zyyx", "yeyy"];
-			private var currentCategories:Array = ["jyrz1", "qzgs", "aqxg", "zhwh", "slkx", "yyms", "zyyx", "yeyy"];
+			private var currentCategory:String;
 			
 			private static var _instance:DevicePage;
-			public static var listIsDirty:Boolean;
 			
 			public static function get instance():DevicePage
 			{
 				return _instance;
-			}
-			
-			public function updateList():void
-			{
-				if (listIsDirty) {
-					DataController.instance.retrievingDeviceList = true;
-					flash.utils.setTimeout(DataController.instance.getDeviceProductList, 30, currentCategories);
-					listIsDirty = false;
-				}
 			}
 			
 			protected function cateButton_clickHandler(event:MouseEvent):void
@@ -49,9 +39,9 @@
 						if (btn == button) {
 							btn.currentState = "selected";
 							if (i == 0)
-								currentCategories = categorieArray;
+								currentCategory = "";
 							else
-								currentCategories = [categorieArray[i-1]];
+								currentCategory = categorieArray[i-1];
 						}
 						else {
 							btn.currentState = "notSelected";
@@ -59,14 +49,14 @@
 					}
 				}
 				
-				DataController.instance.itemsOnDevice.removeAll();
-				DataController.instance.retrievingDeviceList = true;
-				flash.utils.setTimeout(DataController.instance.getDeviceProductList, 30, currentCategories);
+				flash.utils.setTimeout(DataController.instance.getDeviceProductList, 30, currentCategory);
 			}
 			
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
 				_instance = this;
+				DataController.instance.retrievingDeviceList = true;
+				flash.utils.setTimeout(DataController.instance.getDeviceProductListAll, 30);
 				
 				var cats:Array = ["全部", "教育认知", "亲子故事", "安全习惯", "中华文化", "数理科学", "音乐美术", "益智游戏", "幼儿英语"];
 				for (var i:int=0; i<cats.length; i++) {
@@ -84,10 +74,14 @@
 			
 			protected function deviceConnectionChangeHandler(event:DeviceConnectionChangeEvent):void
 			{
+				DataController.instance.itemsOnDevice.filterFunction = null;
+				DataController.instance.itemsOnDevice.refresh();
 				DataController.instance.itemsOnDevice.removeAll();
+				
 				if (event.connected) {
 					DataController.instance.retrievingDeviceList = true;
-					flash.utils.setTimeout(DataController.instance.getDeviceProductList, 30, currentCategories);
+					flash.utils.setTimeout(DataController.instance.getDeviceProductListAll, 30);
+					flash.utils.setTimeout(DataController.instance.getDeviceProductList, 40, currentCategory);
 				}
 			}
 			
@@ -143,7 +137,7 @@
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
-	<fx:Binding source="UIController.instance.deviceDisk.usage" destination="rcPercentage.percentWidth"/>
+	<fx:Binding source="UIController.instance.deviceDisk.usage" destination="deviceBar.rcPercentage.percentWidth"/>
 	<s:Rect width="100%" height="64">
 		<s:fill>
 			<s:SolidColor color="#f2f2f2"/>
@@ -179,16 +173,7 @@
 		<s:HGroup width="100%" height="20" verticalAlign="middle" paddingLeft="10" paddingRight="10" gap="5">
 			<s:Label text="设备容量"/>
 			<s:Group width="390" height="16">
-				<s:Rect width="100%" height="100%">
-					<s:fill>
-						<s:SolidColor color="#BBBBBB"/>
-					</s:fill>
-				</s:Rect>
-				<s:Rect id="rcPercentage" height="100%">
-					<s:fill>
-						<s:SolidColor color="#99cc00"/>
-					</s:fill>
-				</s:Rect>
+				<components:ProgressBar id="deviceBar" width="100%" height="100%"/>
 				<s:Label text="{UIController.instance.deviceDisk.volumeStatus}"
 						 fontSize="11" color="#ffffff" width="100%" height="100%"
 						 textAlign="center" verticalAlign="middle"/>

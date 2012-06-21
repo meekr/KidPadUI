@@ -14,10 +14,6 @@
 				viewStack.selectedIndex = index;
 				channelIndicator.visible = index > 0;
 				channelIndicator.y = 117 + (index-1)*68;
-				
-				if (index == 2 && devicePage) {
-					devicePage.updateList();
-				}
 			}
 			
 			protected function lbl_rollOverHandler(event:MouseEvent):void

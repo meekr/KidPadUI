@@ -28,6 +28,9 @@ package classes
 		public var iconBase64:String;
 		public var iconFile:String;
 		
+		public var storeItemText:String = "购买";
+		public var storeItemEnabled:Boolean = true;
+		
 		public var localItemText:String = "同步";
 		public var localItemEnabled:Boolean = true;
 		
@@ -74,7 +77,6 @@ package classes
 		}
 		
 		
-		
 		protected function appItemDeleteHandler(event:AppItemDeleteEvent):void
 		{
 			deviceItemText = "正在删除中...";
@@ -88,6 +90,16 @@ package classes
 			localItemText = "正在同步中...";
 			localItemEnabled = false;
 			setTimeout(UIController.instance.installApp, 100, this);
+		}
+		
+		public function clone4DeviceItem():AppItem
+		{
+			var app:AppItem = new AppItem();
+			app.name = this.name;
+			app.category = this.category;
+			app.type = AppItemType.DEVICE;
+			app.folderName = this.name;
+			return app;
 		}
 	}
 }

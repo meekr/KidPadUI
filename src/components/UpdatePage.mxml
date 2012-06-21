@@ -8,11 +8,121 @@
 		 >
 	<fx:Script>
 		<![CDATA[
+			import classes.Constants;
+			import classes.UIController;
+			
 			import mx.events.FlexEvent;
+			import mx.rpc.events.ResultEvent;
+			import mx.rpc.http.HTTPService;
+			import mx.utils.Base64Encoder;
+			
+			// ["none", "checking", "no_update", "found_update", "downloading", "updating", "updated"]
+			[Bindable]
+			private var status:String = "none";
+			[Bindable]
+			private var remoteVersion:String;
+			[Bindable]
+			private var downloadPercentage:Number = 0;
+			
+			private var loader:URLLoader;
 			
 			protected function group1_creationCompleteHandler(event:FlexEvent):void
 			{
 				
+			}
+			
+			protected function btnCheck_clickHandler(event:MouseEvent):void
+			{
+				status = "checking";
+				
+				var service:HTTPService = new HTTPService();
+				service.url = Constants.CHECK_UI_URL;
+				trace(service.url);
+				service.method = "GET";
+				service.resultFormat = "e4x";
+				service.addEventListener(ResultEvent.RESULT, uiCheckResultListener);
+				service.showBusyCursor = true;
+				service.send();
+			}
+			
+			private function uiCheckResultListener(event:ResultEvent):void {
+				var xml:XML = event.result as XML;
+				remoteVersion = xml.attributes()[0].toString();
+				if (parseFloat(remoteVersion) > parseFloat(UIController.instance.firmwareVersion)) {
+					status = "found_update";
+				}
+				else {
+					status = "no_update";
+				}
+			}
+			
+			protected function btnUpdate_clickHandler(event:MouseEvent):void
+			{
+				status = "downloading";
+				
+				loader = new URLLoader();
+				loader.dataFormat = URLLoaderDataFormat.BINARY;
+				loader.addEventListener(ProgressEvent.PROGRESS, progressHandler);
+				loader.addEventListener(Event.COMPLETE, completeHandler);
+				
+				var request:URLRequest = new URLRequest();
+				request.url = Constants.BUILT_INT_ZIP_URL;
+				loader.load(request);
+			}
+			
+			private function progressHandler(event:ProgressEvent):void
+			{
+				downloadPercentage = int(event.bytesLoaded*100 / event.bytesTotal);
+				trace(event.bytesLoaded, event.bytesTotal, downloadPercentage);
+			}
+			
+			private function completeHandler(event:Event):void
+			{
+				downloadPercentage = 100;
+				
+				setTimeout(copyFirmware2Pc, 30);
+			}
+			
+			private function copyFirmware2Pc():void
+			{
+				var buf:ByteArray = loader.data;
+				var base64Enc:Base64Encoder = new Base64Encoder();
+				base64Enc.encodeBytes(buf, 0, buf.length);
+				var str:String = base64Enc.toString();
+				str = str.split("\n").join("");
+				
+				var ret:String = "1";
+				CONFIG::ON_PC {
+					ret = ExternalInterface.call("F2C_saveFileFromBase64", UIController.instance.downloadDirectory+"builtIn.zip,"+str);
+					if (ret == "1") {
+						status = "updating";
+						setTimeout(startUpdate, 30);
+					}
+				}
+			}
+			
+			private function startUpdate():void
+			{
+				var ret:String = "1";
+				CONFIG::ON_PC {
+					ret = ExternalInterface.call("F2C_updateFirmware", UIController.instance.downloadDirectory+"builtIn.zip");
+				}
+				
+				if (ret == "1") {
+					status = "updated";
+				}
+			}
+			
+			protected function btnCancel_clickHandler(event:MouseEvent):void
+			{
+				status = "none";
+				downloadPercentage = 0;
+				
+				if (loader) {
+					loader.removeEventListener(ProgressEvent.PROGRESS, progressHandler);
+					loader.removeEventListener(Event.COMPLETE, completeHandler);
+					loader.close();
+				}
 			}
 			
 		]]>
@@ -20,6 +130,7 @@
 	<fx:Declarations>
 		<!-- Place non-visual elements (e.g., services, value objects) here -->
 	</fx:Declarations>
+	<fx:Binding source="downloadPercentage" destination="downloadBar.rcPercentage.percentWidth"/>
 	<s:Rect x="0" y="0" width="100%" height="100%">
 		<s:fill>
 			<s:SolidColor color="#ffffff"/>
@@ -29,19 +140,44 @@
 		<s:HGroup width="90%" verticalAlign="baseline">
 			<s:Label text="系统升级" fontSize="18"/>
 			<s:Spacer width="100%"/>
-			<s:Label text="上次检查：{}"/>
+			<components:KPButton id="btnCheck" text="检查更新" click="btnCheck_clickHandler(event)"
+								 enabled="{UIController.instance.deviceDisk.connected}"
+								 mouseEnabled="{UIController.instance.deviceDisk.connected}"/>
 		</s:HGroup>
 		<s:BorderContainer width="85%" height="60"
 						   borderColor="#cccccc" borderWeight="1">
-			<s:Label width="100%" height="100%" textAlign="center" verticalAlign="middle" text="当前系统版本：{}"/>
+			<s:Label width="100%" height="100%" textAlign="center" verticalAlign="middle" text="当前系统版本：{UIController.instance.firmwareVersion}"/>
 		</s:BorderContainer>
-		<s:HGroup horizontalAlign="center" gap="13">
-			<components:KPButton text="检查更新"/>
-			<s:CheckBox label="自动提示更新"/>
-		</s:HGroup>
-		<s:BorderContainer width="85%" height="150"
+		<s:BorderContainer id="panel" width="85%" height="150" visible="{status != 'none'}"
 						   backgroundColor="#efefef" borderColor="#efefef" borderWeight="0">
-			
+			<s:HGroup horizontalAlign="center" paddingTop="60" paddingBottom="40" gap="8" width="100%"
+					  visible="{status == 'checking'}" includeInLayout="{status == 'checking'}">
+				<components:AnimatedGifImage source="assets/loading.gif"/>
+				<s:Label text="连线检查中..." height="32" verticalAlign="middle"/>
+			</s:HGroup>
+			<s:Label width="100%" top="30" textAlign="center" verticalAlign="top"
+					 text="您的设备已经是最新的系统版本^_^"
+					 visible="{status == 'no_update'}" includeInLayout="{status == 'no_update'}"/>
+			<s:VGroup width="100%" gap="12" paddingTop="20" paddingRight="20" paddingBottom="20" paddingLeft="20"
+					  visible="{status=='found_update' || status=='downloading' || status=='updating'}" includeInLayout="{status=='found_update' || status=='downloading' || status=='updating'}">
+				<s:HGroup width="100%" gap="8" verticalAlign="baseline">
+					<s:Label text="发现新的系统版本：{remoteVersion}"/>
+					<s:Spacer width="100%"/>
+					<components:KPButton id="btnUpdate" text="开始更新" click="btnUpdate_clickHandler(event)"/>
+					<components:KPButton id="btnCancel" text="取消更新" backgroundColor="#ee7119" click="btnCancel_clickHandler(event)"/>
+				</s:HGroup>
+				<s:Spacer height="1"/>
+				<components:ProgressBar id="downloadBar" width="100%" height="22" progressText="下载系统文件：{downloadPercentage}%"
+										visible="{status == 'downloading'}" includeInLayout="{status == 'downloading'}"/>
+				<s:HGroup horizontalAlign="center" width="100%"
+						  visible="{status == 'updating'}" includeInLayout="{status == 'updating'}">
+					<components:AnimatedGifImage source="assets/loading.gif"/>
+					<s:Label text="正在更新系统..." height="32" verticalAlign="middle"/>
+				</s:HGroup>
+			</s:VGroup>
+			<s:Label width="100%" top="30" textAlign="center" verticalAlign="top"
+					 text="更新已完成，请重新启动童伴1号"
+					 visible="{status == 'updated'}" includeInLayout="{status == 'updated'}"/>
 		</s:BorderContainer>
 	</s:VGroup>
 </s:Group>

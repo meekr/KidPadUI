@@ -7,6 +7,7 @@ package classes
 	
 	import flash.events.EventDispatcher;
 	import flash.external.*;
+	import flash.utils.Dictionary;
 	import flash.utils.setTimeout;
 	
 	import mx.collections.ArrayCollection;
@@ -34,12 +35,18 @@ package classes
 		[Bindable]
 		public var retrievingPcList:Boolean;
 		
+		public var itemsOnDeviceHash:Object;
+		
+		private var _currentCategoryFilter:String;
+		
 		public function DataController()
 		{
 			itemsDownloading = new ArrayCollection();
 			itemsOnDevice = new ArrayCollection();
 			itemsOnPc = new ArrayCollection();
 			itemsOnStore = new ArrayCollection();
+			
+			itemsOnDeviceHash = new Object();
 		}
 		
 		public static function get instance():DataController
@@ -96,13 +103,24 @@ package classes
 				item.npkUrl = Constants.getNpkUrl(obj.products[i].download_link);
 				item.iconUrl = Constants.getThumbUrl(obj.products[i].thumbs.s);
 				itemsOnStore.addItem(item);
+				
+				// sync status with device
+				if (itemsOnDeviceHash[item.name])
+					item.storeItemText = "已购买";
 			}
 			this.retrievingStoreList = false;
 		}
 		
-		public function getDeviceProductList(categoryNames:Array):void
+		public function getDeviceProductListAll():void
 		{
+			if (!UIController.instance.deviceDisk.connected)
+				return;
+			
+			itemsOnDeviceHash = new Object();
+			
 			this.retrievingDeviceList = true;
+			
+			var categoryNames:Array = ["jyrz1", "qzgs", "aqxg", "zhwh", "slkx", "yyms", "zyyx", "yeyy"];
 			CONFIG::ON_PC {
 				for (var i:int=0; i<categoryNames.length; i++) {
 					var categoryXmlFile:String = UIController.instance.driveProgramName+"\\book\\storyList_"+categoryNames[i]+".xml";
@@ -122,10 +140,48 @@ package classes
 						app.folderName = entry.substr(0, entry.lastIndexOf("/"));
 						
 						itemsOnDevice.addItem(app);
+						
+						itemsOnDeviceHash[app.name] = app;
 					}
 				}
 			}
 			this.retrievingDeviceList = false;
+			itemsOnDevice.filterFunction = filterMyArrayCollection;
+			itemsOnDevice.refresh();
+			
+			syncStoreAndLocalStatusWithDevice();
+		}
+		
+		public function syncStoreAndLocalStatusWithDevice():void
+		{
+			var i:int;
+			var app:AppItem;
+			for (i=0; i<itemsOnStore.length; i++) {
+				app = itemsOnStore[i] as AppItem;
+				if (itemsOnDeviceHash[app.name])
+					app.storeItemText = "已购买";
+			}
+			
+			for (i=0; i<itemsOnPc.length; i++) {
+				app = itemsOnPc[i] as AppItem;
+				if (itemsOnDeviceHash[app.name]) {
+					app.localItemText = "已安装";
+					app.localItemEnabled = false;
+				}
+			}
+		}
+		
+		private function filterMyArrayCollection(item:Object):Boolean
+		{
+			if (_currentCategoryFilter)
+				return item.category == _currentCategoryFilter;
+			return true;
+		}
+		
+		public function getDeviceProductList(category:String):void
+		{
+			_currentCategoryFilter = category;
+			itemsOnDevice.refresh();
 		}
 		
 		public function getPcProductList():void

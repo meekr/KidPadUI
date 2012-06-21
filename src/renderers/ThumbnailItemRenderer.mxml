@@ -76,7 +76,7 @@
 			<s:Spacer height="100%"/>
 			<s:HGroup visible="{AppItem(data).isStoreType()}" includeInLayout="{AppItem(data).isStoreType()}">
 				<components:KPButton id="btnDetail" text="详情" click="btnDetail_clickHandler(event)"/>
-				<components:KPButton text="购买" click="UIController.instance.addAppToDownload(data as AppItem)"/>
+				<components:KPButton text="{AppItem(data).storeItemText}" click="UIController.instance.addAppToDownload(data as AppItem)"/>
 			</s:HGroup>
 			<s:HGroup visible="{AppItem(data).isPcType()}" includeInLayout="{AppItem(data).isPcType()}">
 				<components:KPButton id="btnSync"

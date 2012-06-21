@@ -27,6 +27,8 @@ package classes
 		public var user:User;
 		[Bindable]
 		public var deviceDisk:DeviceDisk;
+		[Bindable]
+		public var firmwareVersion:String = "0.9";
 		
 		public function UIController()
 		{
@@ -36,6 +38,8 @@ package classes
 				ExternalInterface.addCallback("FL_findNRDGameStoryAndAppRoot", FL_findNRDGameStoryAndAppRoot);
 				ExternalInterface.addCallback("FL_setDeviceConnection", FL_setDeviceConnection);
 				ExternalInterface.addCallback("FL_setDiskVolumnStatus", FL_setDiskVolumnStatus);
+				
+				firmwareVersion = ExternalInterface.call("F2C_getFirmwareVersion", "");
 			}
 			
 			user = new User();
@@ -83,6 +87,8 @@ package classes
 		private function FL_setDeviceConnection(args:String):void
 		{
 			deviceDisk.connected = (args == "1");
+			if (deviceDisk.connected)
+				firmwareVersion = ExternalInterface.call("F2C_getFirmwareVersion", "");
 		}
 		
 		public function addPcItem(appName:String):void
@@ -97,6 +103,12 @@ package classes
 			app.type = AppItemType.PC;
 			app.iconUrl = this.downloadDirectory + appName + ".png";
 			DataController.instance.itemsOnPc.addItem(app);
+			
+			// sync status with device
+			if (DataController.instance.itemsOnDeviceHash[app.name]) {
+				app.localItemText = "已安装";
+				app.localItemEnabled = false;
+			}
 		}
 		
 		public function removeAppOnPc(app:AppItem):void
@@ -115,11 +127,20 @@ package classes
 			CONFIG::ON_PC {
 				var arg:String = this.downloadDirectory + app.name + ".npk";
 				var ret:String = ExternalInterface.call("F2C_installApp", arg);
-				if (ret == "1") {
-					DevicePage.listIsDirty = true;
+				if (ret.length > 0) {
 					app.localItemText = "已安装";
 					app.localItemEnabled = false;
-					//removeAppOnPc(app);
+					
+					// insert item on device
+					if (DataController.instance.itemsOnDevice.length > 0) {
+						var ai:AppItem = app.clone4DeviceItem();
+						ai.iconFile = UIController.instance.driveProgramName+"\\book\\"+app.folderName+"\\75_75.png";
+						ai.iconBase64 = ExternalInterface.call("F2C_getDeviceIconBase64", ai.iconFile);
+						ai.category = ret;
+						
+						DataController.instance.itemsOnDevice.addItemAt(ai, 0);
+						DataController.instance.itemsOnDevice.refresh();
+					}
 				}
 				else {
 					app.localItemText = "同步";
@@ -157,8 +178,17 @@ package classes
 				var ret:String = ExternalInterface.call("F2C_deleteAppOnDevice", arg);
 				if (ret == "1") {
 					var idx:int = DataController.instance.itemsOnDevice.getItemIndex(app);
-					Utils.log2c("delete app at " + idx);
 					DataController.instance.itemsOnDevice.removeItemAt(idx);
+					
+					// sync items on PC
+					for (var i:int=0; i<DataController.instance.itemsOnPc.length; i++) {
+						var ai:AppItem = DataController.instance.itemsOnPc[i];
+						if (ai.name == app.name) {
+							ai.localItemText = "同步";
+							ai.localItemEnabled = true;
+							break;
+						}
+					}
 				}
 				else {
 					app.deviceItemText = "从设备移除";

@@ -11,7 +11,7 @@
 	</fx:Script>
 	<fx:Declarations>
 	</fx:Declarations>
-	<fx:Binding source="UIController.instance.deviceDisk.usage" destination="rcPercentage.percentWidth"/>
+	<fx:Binding source="UIController.instance.deviceDisk.usage" destination="deviceBar.rcPercentage.percentWidth"/>
 	<s:Rect width="100%" height="100%">
 		<s:fill>
 			<s:SolidColor color="#FFFFFF"/>
@@ -30,16 +30,8 @@
 		<components:KPButton x="386" y="84" text="下载" click="trace('download')"/>
 		<components:KPButton x="34" y="281" text="同步" click="trace('sync')"/>
 		<s:Group y="281" left="386" right="34" height="16">
-			<s:Rect width="100%" height="100%">
-				<s:fill>
-					<s:SolidColor color="#DDDDDD"/>
-				</s:fill>
-			</s:Rect>
-			<s:Rect id="rcPercentage" height="100%">
-				<s:fill>
-					<s:SolidColor color="#99cc00"/>
-				</s:fill>
-			</s:Rect>
+			<components:ProgressBar id="deviceBar" width="100%" height="100%"
+									backgroundColor="#DDDDDD" foregroundColor="#99cc00"/>
 		</s:Group>
 		
 	</s:Group>

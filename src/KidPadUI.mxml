@@ -30,6 +30,12 @@
 			private function FL_setDeviceConnection(args:String):void
 			{
 				UIController.instance.deviceDisk.connected = (args=="1");
+				
+				if (UIController.instance.deviceDisk.connected) {
+					CONFIG::ON_PC {
+						UIController.instance.firmwareVersion = ExternalInterface.call("F2C_getFirmwareVersion", "AAAA");
+					}
+				}
 			}
 		]]>
 	</fx:Script>

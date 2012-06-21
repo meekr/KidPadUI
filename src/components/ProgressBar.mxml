@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<s:Group xmlns:fx="http://ns.adobe.com/mxml/2009" 
+		 xmlns:s="library://ns.adobe.com/flex/spark" 
+		 xmlns:mx="library://ns.adobe.com/flex/mx">
+	<fx:Declarations>
+		<fx:Number id="backgroundColor">#BBBBBB</fx:Number>
+		<fx:Number id="foregroundColor">#7ca313</fx:Number>
+		<fx:String id="progressText"></fx:String>
+	</fx:Declarations>
+	<s:Rect width="100%" height="100%">
+		<s:fill>
+			<s:SolidColor color="{backgroundColor}"/>
+		</s:fill>
+	</s:Rect>
+	<s:Rect id="rcPercentage" height="100%">
+		<s:fill>
+			<s:SolidColor color="{foregroundColor}"/>
+		</s:fill>
+	</s:Rect>
+	<s:Label left="10" right="10"
+			 fontSize="11" color="#ffffff"
+			 height="100%" text="{progressText}" verticalAlign="middle"/>
+</s:Group>
